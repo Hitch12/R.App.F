@@ -1,0 +1,7 @@
+.footer-app{
+    min-height:5vh;
+    position: fixed;
+    bottom:0px;
+    z-index: 100;
+    width: 100%;
+}
