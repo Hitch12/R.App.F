@@ -2,13 +2,17 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ToasterComponent } from "../components/Toaster/Toaster.component";
 import _ from 'lodash';
+import { Router } from "@angular/router";
+import { DatePipe } from "@angular/common";
+
 @Injectable({
   providedIn: 'root'
 })
 export class Tools {
   baseUrl: string = "https://localhost:44327/api/"
   Toaster!: ToasterComponent
-  constructor(public _httpClient: HttpClient) { }
+  _dateFormat!: DatePipe;
+  constructor(public _httpClient: HttpClient, public _router: Router) { }
   waitExecuteFunction(delay: number, func: any) {
     let timer = setTimeout(() => {
       func();
@@ -26,6 +30,7 @@ export class Tools {
   }
   public async getAsync<T>(url: string): Promise<T | undefined> {
     try {
+      console.log(url)
       this.startLoading();
       let response = await this._httpClient.get<T>(this.baseUrl + url).toPromise();
       this.stopLoading();
@@ -76,5 +81,12 @@ export class Tools {
       return undefined;
     }
   }
-
+  EditData(dateTime: Date): Date {
+    if (dateTime instanceof Date) return new Date(dateTime.toLocaleDateString("en") + ' GMT')
+    else if (typeof dateTime == "string") return new Date(dateTime + ' GMT')
+    return new Date()
+  }
+  EditFormateData(dateTime: any, format: string) {
+    return this._dateFormat.transform(dateTime, format)
+  }
 }

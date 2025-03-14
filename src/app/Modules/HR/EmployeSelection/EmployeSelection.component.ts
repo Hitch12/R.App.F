@@ -38,7 +38,6 @@ export class EmployeSelectionComponent implements OnInit {
     this._tools.waitExecuteFunction(100, () => {
       this.grid.AllowDelete = false;
       this.grid.AllowSave = false;
-      this.grid.AllowSearch = false;
       this.grid.AllowUpdate = false;
       this.grid.AllowAdd = false;
       this.grid.singleSelectedMode = false;

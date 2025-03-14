@@ -7,13 +7,14 @@ import { Column } from './Column';
 })
 export class CustomColumnDirective {
 
-  @Input() appCustomColumn!:Column
-  constructor(private _temp:TemplateRef<any>) { 
-    
+  @Input() appCustomColumn!: Column
+  constructor(private _temp: TemplateRef<any>) {
+    console.log(_temp)
   }
-  ngOnChanges()
-  {
-    this.appCustomColumn.templateColumn=this._temp;
+  ngOnChanges() {
+    if (this.appCustomColumn) {
+      this.appCustomColumn.templateColumn = this._temp;
+    }
   }
 
 }

@@ -31,6 +31,18 @@
     <label [for]="Effect.COLUMN_NAME">{{Effect.COLUMN_NAME}}</label>
   </p-iftalabel>
   }
+  @case (7) {
+    <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
+    [optionValue]="Effect.CONFIGURATION.ShowValue"
+    [dataSource]="Effect.CONFIGURATION.ArrayOfValues"
+    [optionLabel]="'NAME'"></app-comboBox>
+  }
+  @case (8) {
+    <app-multiselect *ngIf="Effect.CONFIGURATION" [(dataSelected)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
+    [optionValue]="Effect.CONFIGURATION.ShowValue"
+    [dataSource]="Effect.CONFIGURATION.ArrayOfValues"
+    [optionLabel]="'NAME'"></app-multiselect>
+    }
   }
   }@else if (Effect==null) {
   <p-iftalabel dir="rtl">

@@ -15,11 +15,13 @@ import { FormsModule } from '@angular/forms';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { CheckboxModule } from 'primeng/checkbox';
 import { StepperModule } from 'primeng/stepper';
+import { smoothScrollPagesComponent } from "../../../shared/components/SmothScrollPages/smoothScrollPages.component";
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-Effect',
   templateUrl: './Effect.component.html',
   styleUrls: ['./Effect.component.css'],
-  imports: [InputLabelComponent, StepperModule, DataGridComponent, CheckboxModule, ToggleSwitchModule, IftaLabelModule, FormsModule, ComboBoxComponent, InputTextModule, InputNumberModule, EmployeSelectionComponent, NgIf, NgFor, ButtonModule]
+  imports: [InputLabelComponent, StepperModule, RouterLink, DataGridComponent, CheckboxModule, ToggleSwitchModule, IftaLabelModule, FormsModule, ComboBoxComponent, InputTextModule, InputNumberModule, EmployeSelectionComponent, NgIf, NgFor, ButtonModule, smoothScrollPagesComponent]
 })
 export class EffectComponent implements OnInit {
   @ViewChild('grid') grid!: DataGridComponent
@@ -42,7 +44,7 @@ export class EffectComponent implements OnInit {
     this.Columns = [];
     this.effectSelected.COLUMNS = [];
     this.effectSelected.EFFECT_INFO = effect;
-    this.effectSelected.EFFECT_INFO.EFFECT_DATE_MONTH_FROM = new Date().getMonth();
+    this.effectSelected.EFFECT_INFO.EFFECT_DATE_MONTH_FROM = new Date().getMonth() + 1;
     this.effectSelected.EFFECT_INFO.EFFECT_DATE_YEAR_FROM = new Date().getFullYear();
     this.effectSelected.EFFECT_INFO.Count = 1;
 
@@ -51,20 +53,71 @@ export class EffectComponent implements OnInit {
       col_data.CONFIGURATION = col_data.CONFIGURATION != "" && typeof col_data.CONFIGURATION == "string" ? JSON.parse(col_data.CONFIGURATION) : col_data.CONFIGURATION == "" ? null : col_data.CONFIGURATION
       this.effectSelected.COLUMNS.push(this.ColumnInfo(col))
     })
+
+
+  }
+  ColumnInfo(col: any) {
+    return this.colsInfo.find(x => x.ID == col.EFFECT_COLUMN_ID);
+  }
+  getTypeColumn(col: any, column: Column) {
+    column.columnType = "text";
+    column.width = 100;
+  }
+  afterSelected(e: any) {
+    this.selectedEmployee = e;
+  }
+  addEffect() {
+    let sourceInput: Array<any> = []
+    for (let index = 0; index < this.effectSelected.EFFECT_INFO.Count; index++) {
+      this.selectedEmployee.forEach(emp => {
+        let empInput = this._tools.cloneObject(emp);
+        empInput.EMPLOY_ID = emp.ID
+        empInput.value = this.effectSelected.EFFECT_INFO.Value ?? 0;
+        (this.effectSelected.COLUMNS as Array<any>).forEach(col => {
+          empInput["val_" + col.ID] = col.value;
+        });
+        empInput.EFFECT_DATE = new Date(this.effectSelected.EFFECT_INFO.EFFECT_DATE_YEAR_FROM, this.effectSelected.EFFECT_INFO.EFFECT_DATE_MONTH_FROM + (index - 1), 1, 0, 0, 0, 0);
+        empInput.EFFECT_DATE = new Date((empInput.EFFECT_DATE as Date).toLocaleDateString("en") + "GMT");
+        empInput.ID = sourceInput.length + 1;
+        sourceInput.push(empInput);
+      })
+    }
     this._tools.waitExecuteFunction(100, () => {
       if (this.grid) {
+        this.grid.dataSource = [];
         this.grid.Columns = [];
         this.grid.canSelectedSomeColumns = false;
         this.grid.AllowUpdate = false;
         this.grid.AllowAdd = false;
-
         this.grid.onSaveChanges = async () => {
+          let DB_EFFECTS: Array<any> = [];
           this.grid.dataSource.forEach(ef => {
             let sender: any = {};
             sender.DATE_TIME = new Date();
+            sender.EFFECT_DATE = ef.EFFECT_DATE;
+            sender.EMPLOY_ID = ef.EMPLOY_ID;
+            sender.EFFECT_VALUE = ef.value;
+            sender.EFFECT_SYSTEM_ID = this.effectSelected.EFFECT_INFO.ID;
+            sender.VALUES = [];
+            (this.effectSelected.COLUMNS as Array<any>).forEach(col => {
+              let v_E: any = {};
+              v_E.VALUE = JSON.stringify(ef["val_" + col.ID]);
+              v_E.EFFECT_ID = 0;
+              v_E.EFFECT_COLUMN_ID = col.ID;
+              (sender.VALUES as Array<any>).push(v_E)
+            });
+            DB_EFFECTS.push(sender)
           });
+          this.grid.IsLoading = true;
+          this._tools.postAsync("Effect/AddMore", DB_EFFECTS).then(result => {
+            if (result == true) {
+              this._tools.Toaster.showSuccess("تم التسجيل بنجاح");
+              this.grid.IsLoading = false;
+              // this._tools._router.navigate(["Main","Effects"])
+            }
+          })
         }
-
+        this.grid.dataKey = "ID";
         this.grid.Columns.push(new Column("CODE", "الكود"))
         this.grid.Columns.push(new Column("NAME", "الأسم"))
         this.grid.Columns.push(new Column("DEPART", "القسم"))
@@ -91,6 +144,23 @@ export class EffectComponent implements OnInit {
             case 5:
               columnConfig.columnType = "dateTime";
               break;
+            case 7:
+              columnConfig.columnType = "comboBox";
+              columnConfig.columnComboBoxDataSource = col.CONFIGURATION.ArrayOfValues
+              columnConfig.columnComboBoxOptionLabel = 'NAME';
+              columnConfig.columnComboBoxOptionValue = col.CONFIGURATION.ShowValue;
+              columnConfig.columnComboBoxPlaceholder = col.COLUMN_NAME;
+              break;
+            case 8:
+              columnConfig.columnType = "multiSelect";
+              columnConfig.columnMultiSelectDataSource = col.CONFIGURATION.ArrayOfValues
+              columnConfig.columnMultiOptionLabel = 'NAME';
+              columnConfig.columnMultiSelectOptionValue = col.CONFIGURATION.ShowValue;
+              columnConfig.columnMultiPlaceholder = col.COLUMN_NAME;
+              columnConfig.columnMultiSelectChange=(e,item)=>{
+                item["val_" + col.ID]=e;
+              }
+              break;
           }
           this.grid.Columns.push(columnConfig);
         });
@@ -99,30 +169,10 @@ export class EffectComponent implements OnInit {
           return e.toLocaleDateString("en")
         }
       }
+      this.grid.rowsPerPageOptions = [10, 20, 40];
+      this.grid.ManyRowsInShow = 10;
+      console.log(sourceInput)
+      this.grid.dataSource = sourceInput;
     });
-
-  }
-  ColumnInfo(col: any) {
-    return this.colsInfo.find(x => x.ID == col.EFFECT_COLUMN_ID);
-  }
-  getTypeColumn(col: any, column: Column) {
-    column.columnType = "text";
-    column.width = 100;
-  }
-  afterSelected(e: any) {
-    this.selectedEmployee = e;
-  }
-  addEffect() {
-    for (let index = 0; index < this.effectSelected.EFFECT_INFO.Count; index++) {
-      this.selectedEmployee.forEach(emp => {
-        let empInput = this._tools.cloneObject(emp);
-        empInput.value = this.effectSelected.EFFECT_INFO.Value ?? 0;
-        (this.effectSelected.COLUMNS as Array<any>).forEach(col => {
-          empInput["val_" + col.ID] = col.value;
-        });
-        empInput.EFFECT_DATE = new Date(this.effectSelected.EFFECT_INFO.EFFECT_DATE_YEAR_FROM, this.effectSelected.EFFECT_INFO.EFFECT_DATE_MONTH_FROM + index, 1)
-        this.grid.dataSource.push(empInput);
-      })
-    }
   }
 }

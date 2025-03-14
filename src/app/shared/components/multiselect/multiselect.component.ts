@@ -11,7 +11,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
   templateUrl: './multiselect.component.html',
   styleUrls: ['./multiselect.component.css'],
   standalone: true,
-  imports: [MultiSelectModule, FormsModule, ButtonModule,NgIf,InputTextModule, IftaLabelModule]
+  imports: [MultiSelectModule, FormsModule, ButtonModule,InputTextModule, IftaLabelModule]
 })
 export class MultiselectComponent implements OnInit {
 

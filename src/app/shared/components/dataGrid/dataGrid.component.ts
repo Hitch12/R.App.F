@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, Input, OnInit, QueryList, ViewChild, viewChildren, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, OnInit, Output, QueryList, ViewChild, viewChildren, ViewChildren } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ColumnFilter, Table, TableModule } from 'primeng/table';
 import { PResizableColumnDirective } from './pResizableColumn.directive';
@@ -46,10 +46,13 @@ export class DataGridComponent implements OnInit {
   _dataSource!: any[];
   @Input() public set dataSource(v: any[]) {
     this._dataSource = v;
+    this.dataSourceChange.emit(v)
   }
   public get dataSource() {
+
     return this._dataSource;
   }
+  @Output() dataSourceChange: EventEmitter<any> = new EventEmitter()
 
   @Input() tableStyle: any = {}
   @Input() dataKey: string = "ID";
@@ -72,6 +75,8 @@ export class DataGridComponent implements OnInit {
   @Input() IsLoading: boolean = false;
   @Input() AllowHeaderTemplate: boolean = true;
   @Input() AllowDelete: boolean = true;
+  @Input() AllowCurdOperation: boolean = true;
+  @Input() AllowEdit: boolean = false;
   @Input() AllowUpdate: boolean = true;
   @Input() AllowSearch: boolean = true;
   @Input() scrollHeight: string = "flex"
@@ -85,6 +90,7 @@ export class DataGridComponent implements OnInit {
   @Input() AllowDeleteSelected: boolean = true;
   @Input() singleSelectedMode: boolean = false;
   @Input() canSelectedSomeColumns: boolean = true;
+  @Output() onGridLoaded: EventEmitter<any> = new EventEmitter()
   @Input() rowsPerPageOptions: Array<any> = [3, 5, 10, 20, 50];
   @Input() selectionMode: 'single' | 'multiple' | undefined | null;
   @ViewChildren('columnFilter') columnFilters!: QueryList<ColumnFilter>
@@ -102,7 +108,7 @@ export class DataGridComponent implements OnInit {
     plus = this.canReOrder ? plus + 1 : plus;
     return this.Columns.length + plus
   }
-  
+
   constructor(private _tools: Tools, private el: ElementRef<HTMLElement>) { }
   ngOnInit() {
     this.canSelectRow = this.AllowDeleteSelected
@@ -116,9 +122,13 @@ export class DataGridComponent implements OnInit {
   ngAfterViewInit() {
     // this.editFilterWork()
     this.el.nativeElement.addEventListener("keydown", (e) => {
+      console.log(e)
       if (!(e.target as HTMLElement).classList.contains("inputText")) {
         this.pInputTextKeyDown(e, { value: "" }, null);
       }
+    })
+    this._tools.waitExecuteFunction(100, () => {
+      this.onGridLoaded.emit(this);
     })
   }
   ngOnChanges() {
@@ -201,6 +211,9 @@ export class DataGridComponent implements OnInit {
     this.dataSource.splice(this.dataSource.indexOf(item), 1)
     this.dt.reset();
   }
+  onEditItem(item: any) {
+
+  }
   selectLastInput() {
     this._tools.waitExecuteFunction(100, () => {
       let btnLastPage = this.el.nativeElement.querySelector(".p-paginator-last") as HTMLElement
@@ -231,7 +244,7 @@ export class DataGridComponent implements OnInit {
     }
     else if (e.code == "NumpadEnter") {
       await this.onSaveChanges();
-       this.selectLastInput();
+      this.selectLastInput();
     }
     else if (e.code == "Delete" && item != null) {
       this.onDeleteItem(item);
@@ -240,13 +253,10 @@ export class DataGridComponent implements OnInit {
   editFilterMultiSelectValues(selectedSource: Array<any>, optionValue: string): Array<any> {
     return selectedSource.map(x => x[optionValue])
   }
-  onSelectRow(e:any)
-  {
+  onSelectRow(e: any) {
   }
-  onUnSelectRow(e:any)
-  {
+  onUnSelectRow(e: any) {
   }
-  onSelectAllChange(e:any)
-  {
+  onSelectAllChange(e: any) {
   }
 }

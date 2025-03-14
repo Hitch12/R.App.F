@@ -38,6 +38,6 @@ export class ToasterComponent implements OnInit {
   }
 
   showSecondary(detail:string) {
-    this.messageService.add({ severity: 'secondary', summary: 'Secondary', detail: detail });
+    this.messageService.add({ severity: 'secondary', summary: 'معلومة', detail: detail });
   }
 }

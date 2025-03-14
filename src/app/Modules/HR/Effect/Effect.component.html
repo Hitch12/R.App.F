@@ -1,131 +1,71 @@
-<div class="effect my-1 fs-6 fw-bold  py-1 text-end " dir="rtl">
-  <h5 class="my-4"> المؤثرات</h5>
-  <p-stepper transitionOptions="300s" [value]="1">
-    <p-step-item [value]="1">
-      <p-step>اختيار نوع المؤثر</p-step>
-      <p-step-panel>
-        <ng-template #content let-activateCallback="activateCallback">
-          <div class="flex flex-col h-48">
-            <div
-              class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium">
-              <div class="py-3">
-                <app-comboBox [(selected)]="effectPage.TypeEffect" [dataSource]="effects" Label="المؤثر المحدد"
-                  optionLabel="NAME" placeholder="اختر المؤثر" (selectedChange)="selectChange($event)"></app-comboBox>
-              </div>
-            </div>
-          </div>
-          <div class="my-2">
-            <p-button label="التالي" (onClick)="activateCallback(2)" />
-          </div>
-        </ng-template>
-      </p-step-panel>
-    </p-step-item>
-    <p-step-item [value]="2">
-      <p-step>تحديد الموظفين</p-step>
-      <p-step-panel>
-        <ng-template #content let-activateCallback="activateCallback">
-          <div class="flex flex-col h-48">
-            <div
-              class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium">
-              <app-InputLabel placeholder="تحديد الموظفين" class="d-block mt-5 w-100 ps-5">
-                <div pInputText class="py-3">
-                  <app-EmployeSelection [(selectedEmploys)]="effectPage.selectedEmploys" [showInModel]="false"
-                    (selectedEmploysChange)="afterSelected($event)"></app-EmployeSelection>
-                </div>
-              </app-InputLabel>
-            </div>
-          </div>
-          <div class="my-2">
-            <p-button label="التالي" (onClick)="activateCallback(3)" />
-          </div>
-        </ng-template>
-      </p-step-panel>
-    </p-step-item>
-    <p-step-item [value]="3">
-      <p-step> قيمة المؤثر و موعد تتطبيقة</p-step>
-      <p-step-panel>
-        <ng-template #content let-activateCallback="activateCallback">
-          <div class="flex flex-col h-48">
-            <div
-              class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium">
-              <app-InputLabel placeholder="قمة المؤثر" class="d-block mt-5">
-                <div pInputText class="value-switch">
-                  <p-inputNumber [(ngModel)]="effectSelected.EFFECT_INFO.Value"
-                    placeholder="كتابة القيمة ... "></p-inputNumber>
-                  <span for="awaySetMony">
-                    القيمة تقسم عليهم
-                    <p-checkbox id="awaySetMony" [(ngModel)]="awaySetMony" [binary]="true" />
-                  </span>
-                  <span for="awaySetMony">
-                    تحسب بالساعة
-                    <p-checkbox id="awaySetMony" [(ngModel)]="calcByHours" [binary]="true" />
-                  </span>
-                </div>
-              </app-InputLabel>
-              <app-InputLabel placeholder="وقت تطبيق المؤثر" class="d-block mt-5">
-                <div pInputText class="py-5">
-                  <app-InputLabel placeholder="من شهر المؤثر" class="d-inline-block mx-2">
-                    <p-inputNumber [useGrouping]="false" min="1" max="24"
-                      [(ngModel)]="effectSelected.EFFECT_INFO.EFFECT_DATE_MONTH_FROM"
-                      placeholder="01/..."></p-inputNumber>
-                  </app-InputLabel>
-                  <app-InputLabel placeholder="من سنة المؤثر" class="d-inline-block mx-2">
-                    <p-inputNumber [useGrouping]="false" min="1973" max="3000"
-                      [(ngModel)]="effectSelected.EFFECT_INFO.EFFECT_DATE_YEAR_FROM"
-                      placeholder="2024/..."></p-inputNumber>
-                  </app-InputLabel>
-                  <app-InputLabel placeholder="عدد الشهور" width="800px" class="d-inline-block mx-2">
-                    <p-inputNumber [useGrouping]="false" min="1" max="24" [(ngModel)]="effectSelected.EFFECT_INFO.Count"
-                      placeholder="1-24"></p-inputNumber>
-                  </app-InputLabel>
-                </div>
-              </app-InputLabel>
-            </div>
-          </div>
-          <div class="my-2">
-            <p-button label="التالي" (onClick)="activateCallback(4)" />
-          </div>
-        </ng-template>
-      </p-step-panel>
-    </p-step-item>
-    <p-step-item [value]="4">
-      <p-step>كتابة بنود المؤثر</p-step>
-      <p-step-panel>
-        <ng-template #content let-activateCallback="activateCallback">
-          <div class="flex flex-col h-48">
-            <div
-              class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium">
-              <app-InputLabel placeholder="البيانات الخاصة بالمؤثر" class="d-block my-5">
-                <div pInputText class="py-5">
-                  <div class="d-flex flex-wrap row-gap-4 column-gap-3 ">
-                    <ng-container *ngFor="let Effect of effectSelected.COLUMNS">
-                      <app-InputLabel [Effect]="Effect"></app-InputLabel>
-                    </ng-container>
-                  </div>
-                </div>
-              </app-InputLabel>
-            </div>
-          </div>
-          <div class="my-2">
-            <p-button label="التالي" (onClick)="activateCallback(5);addEffect()" />
-          </div>
-        </ng-template>
-      </p-step-panel>
-    </p-step-item>
-    <p-step-item [value]="5">
-      <p-step> المراجعة و الحفظ</p-step>
-      <p-step-panel>
-        <div class="flex flex-col h-48">
-          <div
-            class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium">
-            <app-dataGrid class="d-block my-2" #grid>
-              <div class="header my-1 fs-6 fw-bold py-3  px-2 py-1 text-end" header>
-                المؤثرات المضافة
-              </div>
-            </app-dataGrid>
-          </div>
+<div class="effect my-1 fs-6 fw-bold  py-1 text-end" dir="rtl">
+  <div class="row my-4">
+    <h5 class="col-12 col-lg-8"> المؤثرات</h5>
+    <p-button label="رجوع" class="d-flex col-12 col-lg-4 justify-content-end me-auto"  routerLink="/Main/Effects" icon="pi pi-undo"></p-button>
+  </div>
+  <app-SmoothScrollPages>
+    <div class="py-3" step1>
+      <app-comboBox [(selected)]="effectPage.TypeEffect" [dataSource]="effects" optionLabel="NAME"
+        placeholder="اختر المؤثر" (selectedChange)="selectChange($event)"></app-comboBox>
+    </div>
+    <div step2>
+      <app-InputLabel placeholder="تحديد الموظفين" class="d-block mt-5 w-100 ps-5 ">
+        <div pInputText class="py-3">
+          <app-EmployeSelection [(selectedEmploys)]="effectPage.selectedEmploys" [showInModel]="false"
+            (selectedEmploysChange)="afterSelected($event)"></app-EmployeSelection>
         </div>
-      </p-step-panel>
-    </p-step-item>
-  </p-stepper>
+      </app-InputLabel>
+    </div>
+    <div step3 *ngIf="effectSelected && effectSelected.EFFECT_INFO">
+      <app-InputLabel placeholder="قمة المؤثر" class="d-block mt-5">
+        <div pInputText class="value-switch">
+          <p-inputNumber [(ngModel)]="effectSelected.EFFECT_INFO.Value" placeholder="كتابة القيمة ... "></p-inputNumber>
+          <span for="awaySetMony">
+            القيمة تقسم عليهم
+            <p-checkbox id="awaySetMony" [(ngModel)]="awaySetMony" [binary]="true" />
+          </span>
+          <span for="awaySetMony">
+            تحسب بالساعة
+            <p-checkbox id="awaySetMony" [(ngModel)]="calcByHours" [binary]="true" />
+          </span>
+        </div>
+      </app-InputLabel>
+      <app-InputLabel placeholder="وقت تطبيق المؤثر" class="d-block mt-5">
+        <div pInputText class="py-5">
+          <app-InputLabel placeholder="من شهر المؤثر" class="d-inline-block mx-2">
+            <p-inputNumber [useGrouping]="false" min="1" max="12"
+              [(ngModel)]="effectSelected.EFFECT_INFO.EFFECT_DATE_MONTH_FROM" placeholder="01/..."></p-inputNumber>
+          </app-InputLabel>
+          <app-InputLabel placeholder="من سنة المؤثر" class="d-inline-block mx-2">
+            <p-inputNumber [useGrouping]="false" min="1973" max="3000"
+              [(ngModel)]="effectSelected.EFFECT_INFO.EFFECT_DATE_YEAR_FROM" placeholder="2024/..."></p-inputNumber>
+          </app-InputLabel>
+          <app-InputLabel placeholder="عدد الشهور" width="800px" class="d-inline-block mx-2">
+            <p-inputNumber [useGrouping]="false" min="1" max="24" [(ngModel)]="effectSelected.EFFECT_INFO.Count"
+              placeholder="1-24"></p-inputNumber>
+          </app-InputLabel>
+        </div>
+      </app-InputLabel>
+    </div>
+    <div step4 *ngIf="effectSelected">
+      <app-InputLabel placeholder="البيانات الخاصة بالمؤثر" class="d-block my-5">
+        <div pInputText class="py-5">
+          <div class="d-flex flex-wrap row-gap-4 column-gap-3 my-3">
+            <ng-container *ngFor="let Effect of effectSelected.COLUMNS">
+              <app-InputLabel [Effect]="Effect"></app-InputLabel>
+            </ng-container>
+          </div>
+          <p-button label="اضافة المؤثر" (onClick)="addEffect()" icon="pi pi-plus" ></p-button>
+        </div>
+      </app-InputLabel>
+    </div>
+    <div step5 *ngIf="effectSelected">
+      <app-dataGrid class="d-block my-2" #grid [AllowAdd]="false"  [canSelectedSomeColumns]="false" >
+        <div class="header my-1 fs-6 fw-bold py-3  px-2 py-1 text-end" header>
+          المؤثرات المضافة
+        </div>
+      </app-dataGrid>
+    </div>
+  
+  </app-SmoothScrollPages>
 </div>

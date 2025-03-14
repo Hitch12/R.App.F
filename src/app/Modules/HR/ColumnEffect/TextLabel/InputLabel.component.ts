@@ -7,15 +7,17 @@ import { NgIf } from '@angular/common';
 import { DataGridComponent } from "../../../../shared/components/dataGrid/dataGrid.component";
 import { DateTimeComponent } from "../../../../shared/components/DateTime/DateTime.component";
 import { Tools } from '../../../../shared/service/Tools';
+import { MultiselectComponent } from "../../../../shared/components/multiselect/multiselect.component";
 @Component({
   selector: 'app-InputLabel',
   templateUrl: './InputLabel.component.html',
   styleUrls: ['./InputLabel.component.css'],
   standalone: true,
-  imports: [IftaLabelModule, FormsModule, InputTextModule, ComboBoxComponent, NgIf, DateTimeComponent]
+  imports: [IftaLabelModule, FormsModule, InputTextModule, ComboBoxComponent, NgIf, DateTimeComponent, MultiselectComponent]
 })
 export class InputLabelComponent implements OnInit {
   value: any = null;
+  CONFIGURATION = { "API_CALLING": "Employee", "FOCUS_PROPERTY": "CODE", "REQUIRED": true, "ArrayOfValues": [], ShowValue: "" }
   @Input() Effect: any
   @Input() placeholder: string = ""
   constructor(private _tools: Tools, private _el: ElementRef<HTMLElement>) { }

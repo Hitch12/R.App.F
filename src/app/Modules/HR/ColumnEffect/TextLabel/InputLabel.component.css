@@ -1,6 +1,8 @@
 ::ng-deep .input-Item .p-inputtext {
     width    : 100%;
     font-size: 14px !important;
+
+    padding: 15PX;
 }
 
 ::ng-deep .input-Item .p-iftalabel label {
@@ -18,6 +20,7 @@
 ::ng-deep .input-Item .p-iftalabel {
     padding-top: 10PX !important;
     width      : 100%;
+  
 }
 .input-Item{
     width: 100%;

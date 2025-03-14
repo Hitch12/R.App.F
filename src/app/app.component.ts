@@ -4,15 +4,17 @@ import { DataGridComponent } from "./shared/components/dataGrid/dataGrid.compone
 import { PrimeNG } from 'primeng/config'
 import { Tools } from './shared/service/Tools';
 import { ToasterComponent } from "./shared/components/Toaster/Toaster.component";
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, ToasterComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  providers: [DatePipe],
 })
 export class AppComponent {
   title = 'R.App.F';
-  constructor(private primeng: PrimeNG, private _tools: Tools) {
+  constructor(private primeng: PrimeNG, private _tools: Tools,private _dateFormat: DatePipe) {
 
   }
   ngOnInit() {
@@ -22,10 +24,10 @@ export class AppComponent {
       menu: 1000,     // overlay menus
       tooltip: 1100   // tooltip
     };
+    this._tools._dateFormat=this._dateFormat;
   }
   selectData() {
   }
   ngAfterViewInit() {
-
   }
 }
