@@ -61,5 +61,10 @@ export class ComboBoxComponent implements OnInit {
     this.SelectedValue = null;
     this.selectedChange.emit(null);
     this.SelectedValueChange.emit(this.DefaultClearValue);
+    this.onClear();
+  }
+  onClear()
+  {
+
   }
 }

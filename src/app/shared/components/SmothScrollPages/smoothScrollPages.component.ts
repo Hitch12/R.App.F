@@ -1,43 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { AnimateOnScroll, AnimateOnScrollModule } from 'primeng/animateonscroll';
+import { Tools } from '../../service/Tools';
 
 @Component({
-  selector: 'app-SmoothScrollPages',
-  templateUrl: './SmoothScrollPages.component.html',
-  standalone: true,
-  imports: [AnimateOnScrollModule],
-  styles: [
-    `
-            :host {
-                @keyframes slidedown-icon {
-                    0% {
-                        transform: translateY(0);
-                    }
-
-                    50% {
-                        transform: translateY(20px);
-                    }
-
-                    100% {
-                        transform: translateY(0);
-                    }
-                }
-
-                .slidedown-icon {
-                    animation: slidedown-icon;
-                    animation-duration: 3s;
-                    animation-iteration-count: infinite;
-                }
-
-                .box {
-                    background-image: radial-gradient(var(--primary-300), var(--primary-600));
-                    border-radius: 50% !important;
-                    color: var(--primary-color-text);
-                }
-            }
-        `
-  ]
+    selector: 'app-SmoothScrollPages',
+    templateUrl: './SmoothScrollPages.component.html',
+    styleUrls: ['./SmoothScrollPages.component.css'],
+    standalone: true,
+    imports: [AnimateOnScrollModule],
 })
-export class smoothScrollPagesComponent { }
+export class smoothScrollPagesComponent {
+    constructor(private _tools: Tools, private el: ElementRef<HTMLElement>) {
+
+    }
+    ngAfterViewInit() {
+        this._tools.waitExecuteFunction(100, () => {
+            const sections = this.el.nativeElement.querySelectorAll(".hidden");
+            console.log(sections)
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                    }
+                });
+            }, { threshold: 0.2 });
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        })
+    }
+}
+
+
 
 

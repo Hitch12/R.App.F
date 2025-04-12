@@ -19,6 +19,7 @@ export class InputLabelComponent implements OnInit {
   value: any = null;
   CONFIGURATION = { "API_CALLING": "Employee", "FOCUS_PROPERTY": "CODE", "REQUIRED": true, "ArrayOfValues": [], ShowValue: "" }
   @Input() Effect: any
+  @Input() effectSelected: any
   @Input() placeholder: string = ""
   constructor(private _tools: Tools, private _el: ElementRef<HTMLElement>) { }
 
@@ -47,5 +48,25 @@ export class InputLabelComponent implements OnInit {
     }
     return '';
   }
-
+  setEffectValue(data: any, comboBox: boolean = false) {
+    let value = 0;
+    if (!comboBox) {
+      (data as Array<any>).forEach(item => {
+        value += item?.VALUE ?? 0;
+      });
+    }
+    else {
+      value += data?.VALUE ?? 0;
+    }
+    if (value > 0 && this.Effect.CONFIGURATION.FORCE_VALUE == true) {
+      this.effectSelected.EFFECT_INFO.Value = value;
+      this.effectSelected.EFFECT_INFO.ForceValue = true;
+      this.effectSelected.EFFECT_INFO.calcByHours = true;
+    }
+    else if (this.Effect.CONFIGURATION.FORCE_VALUE == false) {
+      this.effectSelected.EFFECT_INFO.Value = value;
+      this.effectSelected.EFFECT_INFO.ForceValue = false;
+      this.effectSelected.EFFECT_INFO.calcByHours = false;
+    }
+  }
 }

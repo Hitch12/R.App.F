@@ -24,7 +24,7 @@ export class ColumnEffectComponent implements OnInit {
   Columns: Array<Column> = [];
   Columns_Setting: Array<Column> = [];
   constructor() { }
-  CONFIGURATION = { "API_CALLING": "Employee", "FOCUS_PROPERTY": "CODE", "REQUIRED": true, "ArrayOfValues": [], ShowValue: "" }
+  CONFIGURATION = { "API_CALLING": "Employee", "FOCUS_PROPERTY": "CODE", "FORCE_VALUE": false, "REQUIRED": true, "ArrayOfValues": [], ShowValue: "" }
   ngOnInit() {
     this.Columns.push(new Column("ID", "رقم البند"))
     this.Columns.push(new Column("COLUMN_NAME", "اسم البند", "text", "text", 200))
@@ -39,6 +39,7 @@ export class ColumnEffectComponent implements OnInit {
       { "ID": 6, "NAME": "نعم ام لا" },
       { "ID": 7, "NAME": "قيمة من قائمة" },
       { "ID": 8, "NAME": "اكثر من قيمة من قائمة" },
+      { "ID": 9, "NAME": "مكان عمل" },
     ]
     this.Columns[2].columnComboBoxOptionLabel = "NAME";
     this.Columns[2].columnComboBoxOptionValue = "ID";
@@ -51,13 +52,19 @@ export class ColumnEffectComponent implements OnInit {
           break;
         case 2:
           this.CONFIGURATION.FOCUS_PROPERTY = "NAME"
+       
+          item.CONFIGURATION = JSON.stringify(this.CONFIGURATION);
+          break;
+        case 9:
+          this.CONFIGURATION.FOCUS_PROPERTY = "NAME"
+          this.CONFIGURATION.API_CALLING="Place"
           item.CONFIGURATION = JSON.stringify(this.CONFIGURATION);
           break;
       }
     }
     this.Columns_Setting.push(new Column("ID", "الرقم", "number"))
     this.Columns_Setting.push(new Column("NAME", "الأسم", "text"))
-    this.Columns_Setting.push(new Column("VALUE", "القيمة", "text"))
+    this.Columns_Setting.push(new Column("VALUE", "القيمة", "number"))
   }
   setValue(item: any, event: boolean) {
     let CONFIGURATION = JSON.parse(item.CONFIGURATION);
@@ -73,7 +80,6 @@ export class ColumnEffectComponent implements OnInit {
     if (this.CONFIGURATION.ArrayOfValues == undefined) {
       this.CONFIGURATION.ArrayOfValues = [];
     }
-
     this.showDialog = true;
     (this as any)["old_Item"] = item;
   }
@@ -87,7 +93,7 @@ export class ColumnEffectComponent implements OnInit {
         dataGrid.selectedItems = [];
         this.showDialog = false;
         if (this.curd != null) {
-          this.curd.saveChanges();
+          this.curd.grid.save();
         }
       }
     }

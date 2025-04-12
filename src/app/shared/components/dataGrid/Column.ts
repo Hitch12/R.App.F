@@ -1,5 +1,6 @@
 import { TemplateRef } from "@angular/core"
 import { MultiselectComponent } from "../multiselect/multiselect.component"
+import { ComboBoxComponent } from "../comboBox/comboBox.component"
 
 export class Column {
     constructor(
@@ -16,7 +17,7 @@ export class Column {
     columnComboBoxOptionValue: string = ''
     columnComboBoxPlaceholder: string = ''
     columnComboBoxDataSource: Array<any> = []
-    columnComboBoxChange(selectNewItem: any, rowItem: any) {
+    columnComboBoxChange(selectNewItem: any, rowItem: any,comboBox:ComboBoxComponent) {
 
     }
 
@@ -30,6 +31,7 @@ export class Column {
 
     }
     Style_Show(value: any) :string{
+        
         return value
     }
     templateColumn!: TemplateRef<any>

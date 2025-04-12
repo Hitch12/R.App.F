@@ -44,8 +44,12 @@ export class DataGridComponent implements OnInit {
   @Input() RowParent: any
   ParentZIndex: number = 50;
   _dataSource!: any[];
+  startDataSource: Array<any> = [];
   @Input() public set dataSource(v: any[]) {
     this._dataSource = v;
+    if (this.startDataSource.length == 0) {
+      this.startDataSource = this._tools.cloneObject(this.dataSource);
+    }
     this.dataSourceChange.emit(v)
   }
   public get dataSource() {
@@ -77,7 +81,7 @@ export class DataGridComponent implements OnInit {
   @Input() AllowDelete: boolean = true;
   @Input() AllowCurdOperation: boolean = true;
   @Input() AllowEdit: boolean = false;
-  @Input() AllowUpdate: boolean = true;
+  @Input() AllowUpdate: boolean = false;
   @Input() AllowSearch: boolean = true;
   @Input() scrollHeight: string = "flex"
   @Input() ManyRowsInShow: number = 10;
@@ -113,7 +117,37 @@ export class DataGridComponent implements OnInit {
   ngOnInit() {
     this.canSelectRow = this.AllowDeleteSelected
   }
-  async onSaveChanges() {
+  async save() {
+    let dataSaved: Array<any> = [];
+    let deleted: Array<any> = [];
+    this.startDataSource.forEach(oldItem => {
+      if (!this.dataSource.map(x => x.ID).includes(oldItem.ID)) {
+        oldItem.ROW_NUMBER = 0;
+        deleted.push(oldItem);
+      }
+    })
+    this.dataSource.forEach((item, index) => {
+      if (!this._tools.IsEqual(this.startDataSource.find(x=>x.ID==item.ID), item)) {
+        dataSaved.push(item)
+      }
+      if (this.startDataSource.find(x=>x.ID==item.ID) == null) {
+        item.ROW_NUMBER = -1;
+        dataSaved.push(item)
+      }
+    })
+    deleted.forEach(deletedItem => {
+      dataSaved.push(deletedItem)
+    })
+    console.log(dataSaved)
+
+    this.onSaveChanges(dataSaved).then((data: any) => {
+      if (data != null && Array.isArray(data)) {
+        this.startDataSource =   this._tools.cloneObject(data);
+      }
+    })
+
+  }
+  async onSaveChanges(data: any = null) {
 
   }
   async onUpdate(table: Table) {
@@ -122,7 +156,7 @@ export class DataGridComponent implements OnInit {
   ngAfterViewInit() {
     // this.editFilterWork()
     this.el.nativeElement.addEventListener("keydown", (e) => {
-      console.log(e)
+
       if (!(e.target as HTMLElement).classList.contains("inputText")) {
         this.pInputTextKeyDown(e, { value: "" }, null);
       }
@@ -192,7 +226,7 @@ export class DataGridComponent implements OnInit {
   }
   async AddNew(table: Table) {
     if (this.dataSource.find(x => Object.entries(x).length == 0) == null) {
-      this.dataSource.push({})
+      this.dataSource.push({ID:(this.dataSource.length+1)*-1})
       this.IsLoading = true;
       table.reset();
       this.selectLastInput();
@@ -202,10 +236,16 @@ export class DataGridComponent implements OnInit {
     table.clear();
     this.searchValue = ''
   }
+  onSelectColumnData(row: any, value: Date, column: Column) {
+
+  }
   globalFilter(table: Table, event: any) {
     table.filterGlobal(event.target?.value, 'contains')
   }
   expandedRow(item: any, index: number) {
+  }
+  renderItems(item: any, row: HTMLElement, rowIndex: number) {
+
   }
   onDeleteItem(item: any) {
     this.dataSource.splice(this.dataSource.indexOf(item), 1)
@@ -243,7 +283,7 @@ export class DataGridComponent implements OnInit {
       this.AddNew(this.dt)
     }
     else if (e.code == "NumpadEnter") {
-      await this.onSaveChanges();
+      await this.save();
       this.selectLastInput();
     }
     else if (e.code == "Delete" && item != null) {

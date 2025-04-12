@@ -42,15 +42,10 @@
 }
 
 ::ng-deep .combo .p-iftalabel label {
-    font-weight: bold !important;
-}
-
-::ng-deep .combo .p-iftalabel label {
     font-weight  : bold !important;
     background   : white;
     width        : auto;
     padding      : 8PX;
-    border       : .5PX solid gray;
     border-radius: 5px;
     font-size    : 14px !important;
     top          : -9px;

@@ -20,8 +20,8 @@ export class GetAddEditDeleteComponent implements OnInit {
   @Input() ApiPage: string = ""
   @Input() header: string = ""
   @Input() Columns: Array<Column> = []
-  @Output() onUpdate:EventEmitter<any>=new EventEmitter()
-  @Output() onConfigGrid:EventEmitter<DataGridComponent>=new EventEmitter()
+  @Output() onUpdate: EventEmitter<any> = new EventEmitter()
+  @Output() onConfigGrid: EventEmitter<DataGridComponent> = new EventEmitter()
 
   constructor(private _tools: Tools) { }
 
@@ -38,7 +38,7 @@ export class GetAddEditDeleteComponent implements OnInit {
         this.grid.Columns = this.Columns
       }
       this.onConfigGrid.emit(this.grid);
-      this.grid.onSaveChanges = () => this.saveChanges();
+      this.grid.onSaveChanges = (data: any) => this.saveChanges(data);
       this.grid.onUpdate = (e) => this.Update(e);
       this.grid.dataKey = "ID";
       this.grid.dt.loading = true;
@@ -46,19 +46,25 @@ export class GetAddEditDeleteComponent implements OnInit {
         this.grid.dt.loading = false;
         this.grid.dataSource = data
       })
-     
+      this.grid.onUpdate=(t)=>this.Update(t);
     })
   }
   deleteItem(item: any) {
     this.grid.dataSource.splice(this.grid.dataSource.indexOf(item), 1)
     this.grid.dt.reset();
   }
-  async saveChanges() {
-    let data: any = await this._tools.putAsync(this.ApiPage + '/EditMore', this.grid.dataSource)
+  async saveChanges(dataSaved: any = null) {
+    let data: any = await this._tools.putAsync(this.ApiPage + '/EditMore', dataSaved)
     if (data) {
-      this._tools.Toaster.showSuccess("تم التحديث بنجاح");
-      this.grid.dataSource = data
-      this.onUpdate.emit(data)
+      if (Array.isArray(data)) {
+        this._tools.Toaster.showSuccess("تم التحديث بنجاح");
+        this.grid.dataSource = data
+        this.onUpdate.emit(data)
+      }
+      else {
+        this._tools.Toaster.showError(data.MESSAGE);
+      }
+
     }
     else {
       this._tools.Toaster.showError("رجاء ادخال البيانات بشكل صحيح و كامل");

@@ -80,7 +80,7 @@ export class NaveComponent implements OnInit {
                 },
               },
               {
-                label: 'تعريف بنود مؤثرات للنظام',
+                label: 'تعريف حقول ادخال للنظام',
                 icon: 'pi pi-database',
                 command: (event) => {
                   this._router.navigate(['Main', 'ColumnEffect']);

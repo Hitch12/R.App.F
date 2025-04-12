@@ -31,33 +31,30 @@ export class EffectRecodesComponent implements OnInit {
       this.grid.AllowSave = false;
       this.grid.AllowUpdate = false;
       this.grid.AllowAdd = false;
-      this.grid.onDeleteItem = async (record: any) => {        
+      this.grid.onDeleteItem = async (record: any) => {
         if (record.CALCULATED == false) {
-          let result = await this._tools.deleteAsync(`Effect/DeleteEffect?id=${record.EF_ID}`,{}) as any;
+          let result = await this._tools.deleteAsync(`Effect/DeleteEffect?id=${record.EF_ID}`, {}) as any;
           if (result == true) {
-            this.grid.dataSource=this.grid.dataSource.filter(x=>x.EF_ID!=record.EF_ID)
+            this.grid.dataSource = this.grid.dataSource.filter(x => x.EF_ID != record.EF_ID)
             this.grid.dt.reset();
             this._tools.Toaster.showSecondary("تم الحذف بنجاح")
           }
-          else
-          {
+          else {
             this._tools.Toaster.showError("حدث خطأ في الأتصال")
           }
         }
-        else
-        {
+        else {
           this._tools.Toaster.showError("تم حساب هذا المؤثر لا يمكن حذفة")
         }
       };
-      this.grid.DeleteSelectedData=async ()=>{
-        let result = await this._tools.deleteAsync(`Effect/DeleteEffects`,this.grid.selectedItems.map(x=>x.EF_ID)) as any;
+      this.grid.DeleteSelectedData = async () => {
+        let result = await this._tools.deleteAsync(`Effect/DeleteEffects`, this.grid.selectedItems.map(x => x.EF_ID)) as any;
         if (result == true) {
           this._tools.Toaster.showSecondary("تم حذف المحدد بنجاح")
           this.grid.dataSource = this.grid.dataSource.filter(x => this.grid.selectedItems.includes(x) == false);
           this.grid.dt.reset();
         }
-        else
-        {
+        else {
           this._tools.Toaster.showError("حدث خطأ في الأتصال")
         }
       }
@@ -78,6 +75,7 @@ export class EffectRecodesComponent implements OnInit {
     this.grid.Columns.push(new Column("EMP_NAME", "اسم الموظف"));
     this.grid.Columns.push(new Column("DEPART_NAME", "قسم الموظف"));
     this.grid.Columns.push(new Column("EF_VALUE", "قيمة الموئثر"));
+    this.grid.Columns.push(new Column("CALCULATOR_BY_HOURS", "طريقة الحساب"));
     this.grid.Columns.push(new Column("RECORD_DATE", "تاريخ التسجيل"));
     this.grid.Columns.push(new Column("EF_DATE", "شهر التطبيق"));
     (data.COLUMNS_DB as Array<any>).forEach(col => {
@@ -93,6 +91,7 @@ export class EffectRecodesComponent implements OnInit {
       record.EMP_ID = ef.EMPLOY_ID;
       record.EF_VALUE = ef.EFFECT_VALUE;
       record.CALCULATED = ef.CALCULATED;
+      record.CALCULATOR_BY_HOURS = ef.CALCULATOR_BY_HOURS?"يحسب المؤثر بالساعة":"يحسب المؤثر بالقيمة";
       record.EF_DATE = this._tools.EditFormateData(ef.EFFECT_DATE, "dd-MM-yyyy");
       record.RECORD_DATE = this._tools.EditFormateData(ef.DATE_TIME, "dd-MM-yyyy hh:mm:ss");
       record.EMP_NAME = (data.EMPLOYS_DB as Array<any>).find(x => x.ID == ef.EMPLOY_ID).NAME;
@@ -101,6 +100,23 @@ export class EffectRecodesComponent implements OnInit {
       record.DEPART_NAME = (data.DEPARTS_DB as Array<any>).find(x => x.ID == record.DEPART_ID).NAME;
       (data.COLUMNS_DB as Array<any>).forEach(col => {
         record["val_" + col.ID] = JSON.parse((ef.VALUES as Array<any>).find(x => x.EFFECT_COLUMN_ID == col.ID)?.VALUE ?? `""`)
+        if (col.TYPE == 5) {
+          record["val_" + col.ID] = this._tools.EditFormateData(record["val_" + col.ID], "dd-MM-yyyy hh:mm:ss")
+        }
+        if (col.TYPE == 7) {
+          record["val_" + col.ID] = record["val_" + col.ID] == true ? "نعم" : "لا";
+        }
+        if (col.TYPE == 8) {
+          if (record["val_" + col.ID] != null) {
+            let array = record["val_" + col.ID] as Array<any>;
+            let result="";
+            array.forEach((item, index) => {
+              result += item.NAME;
+              if (index != array.length - 1) result += " - ";
+            });
+            record["val_" + col.ID]=result;
+          }
+        }
       });
       source.push(record);
     });

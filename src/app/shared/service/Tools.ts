@@ -12,7 +12,9 @@ export class Tools {
   baseUrl: string = "https://localhost:44327/api/"
   Toaster!: ToasterComponent
   _dateFormat!: DatePipe;
-  constructor(public _httpClient: HttpClient, public _router: Router) { }
+  constructor(public _httpClient: HttpClient, public _router: Router) {
+    console.log(this.EditData(new Date("12/1/2024")).getFullYear())
+  }
   waitExecuteFunction(delay: number, func: any) {
     let timer = setTimeout(() => {
       func();
@@ -30,7 +32,6 @@ export class Tools {
   }
   public async getAsync<T>(url: string): Promise<T | undefined> {
     try {
-      console.log(url)
       this.startLoading();
       let response = await this._httpClient.get<T>(this.baseUrl + url).toPromise();
       this.stopLoading();
@@ -87,6 +88,30 @@ export class Tools {
     return new Date()
   }
   EditFormateData(dateTime: any, format: string) {
-    return this._dateFormat.transform(dateTime, format)
+    if (dateTime != null && dateTime != "") {
+      return this._dateFormat.transform(dateTime, format)
+    }
+    return dateTime;
+  }
+  GetNumberOfMonth(): number {
+    return this.EditData(new Date()).getMonth() + 1;
+  }
+  GetNumberOfYear(): number {
+    return this.EditData(new Date()).getFullYear();
+  }
+  IsEqual(object1: any, object2: any): boolean {
+    if (object1 == undefined || object2 == undefined) {
+      return true
+    }
+    let words1 = JSON.stringify(object1).split("").sort()
+    let words2 = JSON.stringify(object2).split("").sort()
+    for (let index = 0; index < words1.length; index++) {
+      const word1 = words1[index];
+      const word2 = words2[index];
+      if (word1 != word2) {
+        return false
+      }
+    }
+    return true
   }
 }

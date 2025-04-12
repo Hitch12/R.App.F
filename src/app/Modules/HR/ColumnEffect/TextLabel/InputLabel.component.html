@@ -12,6 +12,7 @@
     [apiPathDataSource]="Effect.CONFIGURATION.API_CALLING" [optionValue]="Effect.CONFIGURATION.FOCUS_PROPERTY"
     [optionLabel]="Effect.CONFIGURATION.FOCUS_PROPERTY"></app-comboBox>
   }
+
   @case (3) {
   <p-iftalabel dir="rtl">
     <input [id]="Effect.COLUMN_NAME" [(ngModel)]="Effect.value" pInputText type="text" placeholder="كتابة ... " />
@@ -32,19 +33,23 @@
   </p-iftalabel>
   }
   @case (7) {
-    <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
-    [optionValue]="Effect.CONFIGURATION.ShowValue"
-    [dataSource]="Effect.CONFIGURATION.ArrayOfValues"
-    [optionLabel]="'NAME'"></app-comboBox>
+  <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
+    [optionValue]="Effect.CONFIGURATION.ShowValue" [dataSource]="Effect.CONFIGURATION.ArrayOfValues"
+    (selectedChange)="setEffectValue($event,true)" [optionLabel]="'NAME'"></app-comboBox>
   }
   @case (8) {
-    <app-multiselect *ngIf="Effect.CONFIGURATION" [(dataSelected)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
-    [optionValue]="Effect.CONFIGURATION.ShowValue"
-    [dataSource]="Effect.CONFIGURATION.ArrayOfValues"
-    [optionLabel]="'NAME'"></app-multiselect>
-    }
+  <app-multiselect *ngIf="Effect.CONFIGURATION" (dataSelectedChange)="setEffectValue($event)"
+    [(dataSelected)]="Effect.value" [placeholder]="Effect.COLUMN_NAME" [optionValue]="Effect.CONFIGURATION.ShowValue"
+    [dataSource]="Effect.CONFIGURATION.ArrayOfValues" [optionLabel]="'NAME'"></app-multiselect>
   }
-  }@else if (Effect==null) {
+  @case (9) {
+  <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
+    [apiPathDataSource]="Effect.CONFIGURATION.API_CALLING" [optionValue]="Effect.CONFIGURATION.FOCUS_PROPERTY"
+    [optionLabel]="Effect.CONFIGURATION.FOCUS_PROPERTY"></app-comboBox>
+  }
+  }
+  }
+  @else if (Effect==null) {
   <p-iftalabel dir="rtl">
     <ng-content></ng-content>
     <label [for]="placeholder">{{placeholder}}</label>
