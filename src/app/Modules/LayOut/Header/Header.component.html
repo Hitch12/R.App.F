@@ -11,10 +11,10 @@
           <i class="pi pi-bell"></i>
         </span>
         <span class="me-3">
-          اسم المستخدم
+          {{this._tools._LoginName}}
           <i class="pi pi-user"></i>
         </span>
-        <span class="me-4">
+        <span class="me-4" (click)="logOut()">
           تسجيل الخروج
           <i dir="rtl" class="pi pi-power-off"></i>
         </span>

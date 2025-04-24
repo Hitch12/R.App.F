@@ -46,11 +46,13 @@ export class DataGridComponent implements OnInit {
   _dataSource!: any[];
   startDataSource: Array<any> = [];
   @Input() public set dataSource(v: any[]) {
-    this._dataSource = v;
-    if (this.startDataSource.length == 0) {
-      this.startDataSource = this._tools.cloneObject(this.dataSource);
+    if (v != undefined) {
+      this._dataSource = v;
+      if (this.startDataSource.length == 0) {
+        this.startDataSource = this._tools.cloneObject(this.dataSource);
+      }
+      this.dataSourceChange.emit(v)
     }
-    this.dataSourceChange.emit(v)
   }
   public get dataSource() {
 
@@ -76,7 +78,16 @@ export class DataGridComponent implements OnInit {
   @Input() AllowAdd: boolean = true;
   childrenGrid: Array<ChildGrid> = []
   @Input() AllowSave: boolean = true;
-  @Input() IsLoading: boolean = false;
+  @Input()
+  public set IsLoading(v: boolean) {
+    console.log(v)
+    if (v) {
+      this._tools.Loading.startLoading();
+    } else {
+      this._tools.Loading.stopLoading();
+    }
+  }
+
   @Input() AllowHeaderTemplate: boolean = true;
   @Input() AllowDelete: boolean = true;
   @Input() AllowCurdOperation: boolean = true;
@@ -127,10 +138,10 @@ export class DataGridComponent implements OnInit {
       }
     })
     this.dataSource.forEach((item, index) => {
-      if (!this._tools.IsEqual(this.startDataSource.find(x=>x.ID==item.ID), item)) {
+      if (!this._tools.IsEqual(this.startDataSource.find(x => x.ID == item.ID), item)) {
         dataSaved.push(item)
       }
-      if (this.startDataSource.find(x=>x.ID==item.ID) == null) {
+      if (this.startDataSource.find(x => x.ID == item.ID) == null) {
         item.ROW_NUMBER = -1;
         dataSaved.push(item)
       }
@@ -142,7 +153,7 @@ export class DataGridComponent implements OnInit {
 
     this.onSaveChanges(dataSaved).then((data: any) => {
       if (data != null && Array.isArray(data)) {
-        this.startDataSource =   this._tools.cloneObject(data);
+        this.startDataSource = this._tools.cloneObject(data);
       }
     })
 
@@ -156,13 +167,13 @@ export class DataGridComponent implements OnInit {
   ngAfterViewInit() {
     // this.editFilterWork()
     this.el.nativeElement.addEventListener("keydown", (e) => {
-
       if (!(e.target as HTMLElement).classList.contains("inputText")) {
         this.pInputTextKeyDown(e, { value: "" }, null);
       }
     })
     this._tools.waitExecuteFunction(100, () => {
       this.onGridLoaded.emit(this);
+      (this.dt as any).MyGrid=this;
     })
   }
   ngOnChanges() {
@@ -225,8 +236,11 @@ export class DataGridComponent implements OnInit {
 
   }
   async AddNew(table: Table) {
+    if (this.dataSource == undefined) {
+      this.dataSource = [];
+    }
     if (this.dataSource.find(x => Object.entries(x).length == 0) == null) {
-      this.dataSource.push({ID:(this.dataSource.length+1)*-1})
+      this.dataSource.push({ ID: (this.dataSource.length + 1) * -1 })
       this.IsLoading = true;
       table.reset();
       this.selectLastInput();
@@ -252,6 +266,9 @@ export class DataGridComponent implements OnInit {
     this.dt.reset();
   }
   onEditItem(item: any) {
+
+  }
+  onGridAction(Action: GridAction) {
 
   }
   selectLastInput() {
@@ -299,4 +316,11 @@ export class DataGridComponent implements OnInit {
   }
   onSelectAllChange(e: any) {
   }
+}
+
+export interface GridAction{
+  EVENT:any,
+  itemEdit:any,
+  ActonType:"CLICK"|"KEYUP"|"SELECT",
+  COLUMN:Column
 }

@@ -4,15 +4,22 @@
   @switch (Effect.TYPE) {
   @case (1) {
   <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
+    [dataSource]="apiData"
     [apiPathDataSource]="Effect.CONFIGURATION.API_CALLING" [optionValue]="Effect.CONFIGURATION.FOCUS_PROPERTY"
     [optionLabel]="Effect.CONFIGURATION.FOCUS_PROPERTY"></app-comboBox>
   }
   @case (2) {
-  <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
+  <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME" 
+    [dataSource]="apiData"
     [apiPathDataSource]="Effect.CONFIGURATION.API_CALLING" [optionValue]="Effect.CONFIGURATION.FOCUS_PROPERTY"
     [optionLabel]="Effect.CONFIGURATION.FOCUS_PROPERTY"></app-comboBox>
   }
-
+  @case (9) {
+    <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
+      [dataSource]="apiData"  
+      [apiPathDataSource]="Effect.CONFIGURATION.API_CALLING" [optionValue]="Effect.CONFIGURATION.FOCUS_PROPERTY"
+      [optionLabel]="Effect.CONFIGURATION.FOCUS_PROPERTY"></app-comboBox>
+    }
   @case (3) {
   <p-iftalabel dir="rtl">
     <input [id]="Effect.COLUMN_NAME" [(ngModel)]="Effect.value" pInputText type="text" placeholder="كتابة ... " />
@@ -41,11 +48,6 @@
   <app-multiselect *ngIf="Effect.CONFIGURATION" (dataSelectedChange)="setEffectValue($event)"
     [(dataSelected)]="Effect.value" [placeholder]="Effect.COLUMN_NAME" [optionValue]="Effect.CONFIGURATION.ShowValue"
     [dataSource]="Effect.CONFIGURATION.ArrayOfValues" [optionLabel]="'NAME'"></app-multiselect>
-  }
-  @case (9) {
-  <app-comboBox *ngIf="Effect.CONFIGURATION" [(SelectedValue)]="Effect.value" [placeholder]="Effect.COLUMN_NAME"
-    [apiPathDataSource]="Effect.CONFIGURATION.API_CALLING" [optionValue]="Effect.CONFIGURATION.FOCUS_PROPERTY"
-    [optionLabel]="Effect.CONFIGURATION.FOCUS_PROPERTY"></app-comboBox>
   }
   }
   }

@@ -44,7 +44,7 @@ export class ComboBoxComponent implements OnInit {
         this.dataSource = dataSource;
         this.selected = this.selected ? this.dataSource.find(x => x.ID == this.selected.ID) : null;
       }
-    } 
+    }
   }
   selectedItem(item: any) {
     if (item && item != "") {
@@ -63,8 +63,7 @@ export class ComboBoxComponent implements OnInit {
     this.SelectedValueChange.emit(this.DefaultClearValue);
     this.onClear();
   }
-  onClear()
-  {
+  onClear() {
 
   }
 }

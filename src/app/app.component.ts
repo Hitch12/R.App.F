@@ -5,9 +5,11 @@ import { PrimeNG } from 'primeng/config'
 import { Tools } from './shared/service/Tools';
 import { ToasterComponent } from "./shared/components/Toaster/Toaster.component";
 import { DatePipe } from '@angular/common';
+import { LoadingComponent } from './shared/components/Loading/Loading.component';
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToasterComponent],
+  imports: [RouterOutlet, ToasterComponent, LoadingComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   providers: [DatePipe],

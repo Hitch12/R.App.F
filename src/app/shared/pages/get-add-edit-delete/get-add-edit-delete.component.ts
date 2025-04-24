@@ -41,9 +41,9 @@ export class GetAddEditDeleteComponent implements OnInit {
       this.grid.onSaveChanges = (data: any) => this.saveChanges(data);
       this.grid.onUpdate = (e) => this.Update(e);
       this.grid.dataKey = "ID";
-      this.grid.dt.loading = true;
+      this.grid.IsLoading = true;
       this._tools.getAsync(this.ApiPage).then((data: any) => {
-        this.grid.dt.loading = false;
+        this.grid.IsLoading = false;
         this.grid.dataSource = data
       })
       this.grid.onUpdate=(t)=>this.Update(t);

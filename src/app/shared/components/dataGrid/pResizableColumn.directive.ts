@@ -1,6 +1,7 @@
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Inject, Input, Output, PLATFORM_ID } from '@angular/core';
 import { Tools } from '../../service/Tools';
 import { Column } from './Column';
+import { isPlatformBrowser } from '@angular/common';
 
 @Directive({
   selector: '[appResizableColumn]',
@@ -14,10 +15,11 @@ export class PResizableColumnDirective implements AfterViewInit {
   divLine!: HTMLElement
   divSpaceColResize!: HTMLElement
   @Output() OnResizeColumn :EventEmitter<any>=new EventEmitter()
-  constructor(public el: ElementRef<HTMLElement>,private _tools:Tools) {
+  constructor(public el: ElementRef<HTMLElement>,private _tools:Tools,@Inject(PLATFORM_ID) private platformId: Object) {
+    
   }
   ngAfterViewInit() {
-    if (document) {
+    if (isPlatformBrowser(this.platformId) && this.divSpaceColResize) {
       this.divSpaceColResize = document.createElement("div")
       this.divSpaceColResize.classList.add('col-resize')
       this.el.nativeElement.appendChild(this.divSpaceColResize)

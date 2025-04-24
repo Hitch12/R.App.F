@@ -7,7 +7,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import { definePreset } from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth.interceptor';
 
 const MyPreset = definePreset(Aura, {
   //Your customizations, see the following sections for examples
@@ -28,18 +29,18 @@ const MyPreset = definePreset(Aura, {
     },
     colorScheme: {
       light: {
-          primary: {
-              color: '{zinc.950}',
-              inverseColor: '#ffffff',
-              hoverColor: '{zinc.900}',
-              activeColor: '{zinc.800}'
-          },
-          highlight: {
-              background: '{zinc.950}',
-              focusBackground: '{zinc.700}',
-              color: '#ffffff',
-              focusColor: '#ffffff'
-          }
+        primary: {
+          color: '{zinc.950}',
+          inverseColor: '#ffffff',
+          hoverColor: '{zinc.900}',
+          activeColor: '{zinc.800}'
+        },
+        highlight: {
+          background: '{zinc.950}',
+          focusBackground: '{zinc.700}',
+          color: '#ffffff',
+          focusColor: '#ffffff'
+        }
       },
     }
   }
@@ -48,6 +49,9 @@ const MyPreset = definePreset(Aura, {
 export const appConfig: ApplicationConfig = {
 
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
+  provideHttpClient(
+    withInterceptors([authInterceptor])
+  ),
   provideRouter(routes),
   provideClientHydration(withEventReplay()),
   provideAnimationsAsync(),

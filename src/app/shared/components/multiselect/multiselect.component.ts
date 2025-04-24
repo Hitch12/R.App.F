@@ -79,6 +79,11 @@ export class MultiselectComponent implements OnInit {
         this.dataSelected = Array;
       }
     }
+    else
+    {
+      if(this.dataSelected!=null)
+      this.dataSelected =this.dataSource.filter(z=>this.dataSelected.map(x=>x[this.optionValue]).includes(z[this.optionValue]))
+    }
   }
 
 }

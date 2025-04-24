@@ -9,11 +9,19 @@ import { EffectInSystemComponent } from './Modules/HR/EffectInSystem/EffectInSys
 import { ColumnEffectComponent } from './Modules/HR/ColumnEffect/ColumnEffect.component';
 import { EffectComponent } from './Modules/HR/Effect/Effect.component';
 import { EffectRecodesComponent } from './Modules/HR/EffectRecodes/EffectRecodes.component';
+import { AccountComponent } from './Modules/Admin/Account/Account.component';
+import { UserComponent } from './Modules/Admin/User/User.component';
+import { LoginComponent } from './Modules/Admin/Login/Login.component';
+import { HomeComponent } from './Modules/LayOut/Home/Home.component';
+import { authGuard } from './shared/Gurd/auth.guard';
+import { RuleGroupComponent } from './Modules/Admin/RuleGroup/RuleGroup.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'Main', title: "الرئيسية", pathMatch: "full" },
+    { path: '', redirectTo: 'Login', title: "الرئيسية", pathMatch: "full" },
+    { path: 'Login',title:'تسجيل الدخول', component: LoginComponent },
     {
-        path: 'Main', title: "الرئيسية", component: MainComponent, children: [
+        path: 'Main', title: "الرئيسية",canActivate:[authGuard],canActivateChild:[authGuard], component: MainComponent, children: [
+            { path: 'Home',title:'الترحيب', component: HomeComponent },
             { path: 'EffectInSystem',title:'مؤثرات النظام', component: EffectInSystemComponent },
             { path: 'ColumnEffect',title:'بنود المؤثر', component: ColumnEffectComponent },
             { path: 'Mangements',title:'الهيكل الاداري', component: MangementComponent },
@@ -23,6 +31,10 @@ export const routes: Routes = [
             { path: 'Effects',title:'المؤثرات', component: EffectRecodesComponent },
             { path: 'Effects/Add',title:'اضافة مؤئثر', component: EffectComponent },
             { path: 'Departs',title:'الأقسام', component: DepartComponent },
+            { path: 'Accounts',title:'الحسابات', component: AccountComponent },
+            { path: 'Users',title:'المستخدمين', component: UserComponent },
+            { path: 'RuleGroup',title:'نوع المستخدم', component: RuleGroupComponent },
         ]
     },
+    { path: '**', redirectTo: 'Main', title: "الرئيسية", pathMatch: "full" }
 ];

@@ -6,7 +6,7 @@ import { ComboBoxComponent } from "../../../shared/components/comboBox/comboBox.
 import { Column } from '../../../shared/components/dataGrid/Column';
 import { EmployeSelectionComponent } from "../EmployeSelection/EmployeSelection.component";
 import { JsonPipe, NgFor, NgIf } from '@angular/common';
-import { InputLabelComponent } from "../ColumnEffect/TextLabel/InputLabel.component";
+import { InputLabelComponent } from "../../../shared/pages/TextLabel/InputLabel.component";
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -133,14 +133,13 @@ export class EffectComponent implements OnInit {
   addEffect() {
     let sourceInput: Array<any> = [];
     if (!this.effectSelected.EFFECT_INFO) return;
-
+    //generate Data Source
     for (let index = 0; index < this.effectSelected.EFFECT_INFO.Count; index++) {
       this.selectedEmployee.forEach(emp => {
         let empInput = this._tools.cloneObject(emp);
         empInput.EMPLOY_ID = emp.ID;
         empInput.calcByHours = this.effectSelected.EFFECT_INFO?.calcByHours;
         empInput.value = this.effectSelected.EFFECT_INFO?.Value ?? 0;
-
         this.effectSelected.COLUMNS.forEach(col => {
           empInput["val_" + col.ID] = col.value;
         });
@@ -157,16 +156,20 @@ export class EffectComponent implements OnInit {
         sourceInput.push(empInput);
       });
     }
-
     if (this.effectSelected.EFFECT_INFO?.divedThem) {
       sourceInput.forEach(item => item.value = (item.value / sourceInput.length));
     }
+
+    //generate Data Configuration
     this._tools.waitExecuteFunction(100, async () => {
       if (this.grid) {
+        this.grid.rowsPerPageOptions = [10, 20, 40];
+        this.grid.ManyRowsInShow = 10;
+        
         this.grid.dataSource = [];
         this.grid.Columns = [];
 
-        // عند الحفظ
+        // On Save
         this.grid.onSaveChanges = async () => {
           if (this.grid.dataSource.length > 0) {
             if (!this.validationAll()) {
@@ -261,7 +264,7 @@ export class EffectComponent implements OnInit {
         let FORCE_VALUE = (this.effectSelected.COLUMNS as Array<any>).find(col => (col.TYPE == 7 || col.TYPE == 8) && col?.CONFIGURATION?.FORCE_VALUE == true) != null
         this.grid.Columns.push(new Column("value", "القيمة", FORCE_VALUE ? "lapel" : "number", "numeric"));
         this.grid.Columns.push(new Column("calcByHours", "تحسب بالساعة", "yes-no"))
-        if (!FORCE_VALUE) {
+        if (FORCE_VALUE) {
           this.grid.Columns[this.grid.Columns.length - 1].columnType = "lapel";
           this.grid.Columns[this.grid.Columns.length - 1].Style_Show = (value) => {
             return value == true ? "ساعة" : "قيمة"
@@ -287,7 +290,7 @@ export class EffectComponent implements OnInit {
             case 2:
             case 9:
               columnConfig.apiPathDataSource = col.CONFIGURATION.API_CALLING;
-              columnConfig.columnComboBoxDataSource = [];
+              columnConfig.columnComboBoxDataSource = await this._tools.getAsync(col.CONFIGURATION.API_CALLING) as Array<any>;
               columnConfig.columnComboBoxOptionLabel = col.CONFIGURATION.FOCUS_PROPERTY;
               columnConfig.columnComboBoxOptionValue = col.CONFIGURATION.FOCUS_PROPERTY;
               columnConfig.columnComboBoxPlaceholder = col.COLUMN_NAME;
@@ -305,22 +308,21 @@ export class EffectComponent implements OnInit {
             case 7:
               columnConfig.columnType = "comboBox";
               columnConfig.columnComboBoxDataSource = col.CONFIGURATION.ArrayOfValues
-              columnConfig.columnComboBoxOptionLabel = 'NAME';
+              columnConfig.columnComboBoxOptionLabel = col.CONFIGURATION.ShowValue;
               columnConfig.columnComboBoxOptionValue = col.CONFIGURATION.ShowValue;
               columnConfig.columnComboBoxPlaceholder = col.COLUMN_NAME;
               columnConfig.columnComboBoxChange = (item, row) => {
-                console.log(row,item)
                 row.value = item.VALUE
+                row.calcByHours = (this.effectSelected.COLUMNS as Array<any>).find(col => (col.TYPE == 7 || col.TYPE == 8) && col?.CONFIGURATION?.FORCE_VALUE == true) != null
               }
               break;
             case 8:
               columnConfig.columnType = "multiSelectObjectMode";
               columnConfig.columnMultiSelectDataSource = col.CONFIGURATION.ArrayOfValues
-              columnConfig.columnMultiOptionLabel = 'NAME';
+              columnConfig.columnMultiOptionLabel =col.CONFIGURATION.ShowValue;
               columnConfig.columnMultiSelectOptionValue = col.CONFIGURATION.ShowValue;
               columnConfig.columnMultiPlaceholder = col.COLUMN_NAME;
               columnConfig.columnMultiSelectChange = (multi, row) => {
-                console.log(row)
                 let value = 0;
                 multi.dataSelected.forEach(item => {
                   value += item.VALUE;
@@ -337,10 +339,7 @@ export class EffectComponent implements OnInit {
           return e.toLocaleDateString("en")
         }
       }
-      this.grid.rowsPerPageOptions = [10, 20, 40];
-      this.grid.ManyRowsInShow = 10;
       this.grid.dataSource = sourceInput;
-
     });
   }
 

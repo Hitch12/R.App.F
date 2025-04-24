@@ -4,7 +4,7 @@ import { Tools } from '../../../shared/service/Tools';
 import { Column } from '../../../shared/components/dataGrid/Column';
 import { ComboBoxComponent } from "../../../shared/components/comboBox/comboBox.component";
 import { DateTimeComponent } from "../../../shared/components/DateTime/DateTime.component";
-import { InputLabelComponent } from "../ColumnEffect/TextLabel/InputLabel.component";
+import { InputLabelComponent } from "../../../shared/pages/TextLabel/InputLabel.component";
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
@@ -83,6 +83,7 @@ export class EffectRecodesComponent implements OnInit {
     });
     this.grid.IsLoading = false;
     let source: Array<any> = [];
+    console.log(data);
     (data.EFFECTS_DB as Array<any>).forEach(ef => {
       ef.VALUES = (data.VALUES_DB as Array<any>).filter(x => x.EFFECT_ID == ef.ID);
       let record: any = {};
@@ -91,7 +92,7 @@ export class EffectRecodesComponent implements OnInit {
       record.EMP_ID = ef.EMPLOY_ID;
       record.EF_VALUE = ef.EFFECT_VALUE;
       record.CALCULATED = ef.CALCULATED;
-      record.CALCULATOR_BY_HOURS = ef.CALCULATOR_BY_HOURS?"يحسب المؤثر بالساعة":"يحسب المؤثر بالقيمة";
+      record.CALCULATOR_BY_HOURS = ef.CALCULATOR_BY_HOURS ? "يحسب المؤثر بالساعة" : "يحسب المؤثر بالقيمة";
       record.EF_DATE = this._tools.EditFormateData(ef.EFFECT_DATE, "dd-MM-yyyy");
       record.RECORD_DATE = this._tools.EditFormateData(ef.DATE_TIME, "dd-MM-yyyy hh:mm:ss");
       record.EMP_NAME = (data.EMPLOYS_DB as Array<any>).find(x => x.ID == ef.EMPLOY_ID).NAME;
@@ -103,18 +104,20 @@ export class EffectRecodesComponent implements OnInit {
         if (col.TYPE == 5) {
           record["val_" + col.ID] = this._tools.EditFormateData(record["val_" + col.ID], "dd-MM-yyyy hh:mm:ss")
         }
-        if (col.TYPE == 7) {
+        if (col.TYPE == 6) {
           record["val_" + col.ID] = record["val_" + col.ID] == true ? "نعم" : "لا";
         }
         if (col.TYPE == 8) {
           if (record["val_" + col.ID] != null) {
             let array = record["val_" + col.ID] as Array<any>;
-            let result="";
-            array.forEach((item, index) => {
-              result += item.NAME;
-              if (index != array.length - 1) result += " - ";
-            });
-            record["val_" + col.ID]=result;
+            let result = "";
+            if (Array.isArray(array)) {
+              array.forEach((item, index) => {
+                result += item.NAME;
+                if (index != array.length - 1) result += " - ";
+              });
+              record["val_" + col.ID] = result;
+            }
           }
         }
       });

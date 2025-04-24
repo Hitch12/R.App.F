@@ -4,6 +4,7 @@ import { ToasterComponent } from "../components/Toaster/Toaster.component";
 import _ from 'lodash';
 import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
+import { LoadingComponent } from "../components/Loading/Loading.component";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,9 @@ import { DatePipe } from "@angular/common";
 export class Tools {
   baseUrl: string = "https://localhost:44327/api/"
   Toaster!: ToasterComponent
+  Loading!: LoadingComponent
   _dateFormat!: DatePipe;
+  _LoginName:string=""
   constructor(public _httpClient: HttpClient, public _router: Router) {
     console.log(this.EditData(new Date("12/1/2024")).getFullYear())
   }
@@ -21,63 +24,57 @@ export class Tools {
       clearTimeout(timer);
     }, delay)
   }
-  startLoading() {
-
-  }
-  stopLoading() {
-
-  }
   cloneObject(object: any): any {
     return _.cloneDeep(object)
   }
   public async getAsync<T>(url: string): Promise<T | undefined> {
     try {
-      this.startLoading();
+      this.Loading.startLoading();
       let response = await this._httpClient.get<T>(this.baseUrl + url).toPromise();
-      this.stopLoading();
+      this.Loading.stopLoading();
       return response
     }
     catch (ex: any) {
-      this.stopLoading();
+      this.Loading.stopLoading();
       //   this.Toaster?.showErrorAlert(ex.error.title, ex.error.detail)
       return undefined;
     }
   }
   public async postAsync<T>(url: string, data: any): Promise<T | undefined> {
     try {
-      this.startLoading();
+      this.Loading.startLoading();
       let response = await this._httpClient.post<T>(this.baseUrl + url, data).toPromise();
-      this.stopLoading();
+      this.Loading.stopLoading();
       return response
     }
     catch (ex: any) {
-      this.stopLoading();
+      this.Loading.stopLoading();
       //   this.Toaster?.showErrorAlert(ex.error.title, ex.error.detail)
       return undefined;
     }
   }
   public async putAsync<T>(url: string, data: any): Promise<T | undefined> {
     try {
-      this.startLoading();
+      this.Loading.startLoading();
       let response = await this._httpClient.put<T>(this.baseUrl + url, data).toPromise();
-      this.stopLoading();
+      this.Loading.stopLoading();
       return response
     }
     catch (ex: any) {
-      this.stopLoading();
+      this.Loading.stopLoading();
       //   this.Toaster?.showErrorAlert(ex.error.title, ex.error.detail)
       return undefined;
     }
   }
   public async deleteAsync<T>(url: string, data: any = null): Promise<T | undefined> {
     try {
-      this.startLoading();
+      this.Loading.startLoading();
       let response = await this._httpClient.delete<T>(this.baseUrl + url, { body: data }).toPromise();
-      this.stopLoading();
+      this.Loading.stopLoading();
       return response
     }
     catch (ex: any) {
-      this.stopLoading();
+      this.Loading.stopLoading();
       //   this.Toaster?.showErrorAlert(ex.error.title, ex.error.detail)
       return undefined;
     }

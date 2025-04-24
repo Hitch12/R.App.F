@@ -2,12 +2,12 @@ import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputTextModule } from 'primeng/inputtext';
-import { ComboBoxComponent } from "../../../../shared/components/comboBox/comboBox.component";
+import { ComboBoxComponent } from "../../components/comboBox/comboBox.component";
 import { NgIf } from '@angular/common';
-import { DataGridComponent } from "../../../../shared/components/dataGrid/dataGrid.component";
-import { DateTimeComponent } from "../../../../shared/components/DateTime/DateTime.component";
-import { Tools } from '../../../../shared/service/Tools';
-import { MultiselectComponent } from "../../../../shared/components/multiselect/multiselect.component";
+import { DataGridComponent } from "../../components/dataGrid/dataGrid.component";
+import { DateTimeComponent } from "../../components/DateTime/DateTime.component";
+import { Tools } from '../../service/Tools';
+import { MultiselectComponent } from "../../components/multiselect/multiselect.component";
 @Component({
   selector: 'app-InputLabel',
   templateUrl: './InputLabel.component.html',
@@ -17,13 +17,20 @@ import { MultiselectComponent } from "../../../../shared/components/multiselect/
 })
 export class InputLabelComponent implements OnInit {
   value: any = null;
+  apiData: Array<any> = [];
   CONFIGURATION = { "API_CALLING": "Employee", "FOCUS_PROPERTY": "CODE", "REQUIRED": true, "ArrayOfValues": [], ShowValue: "" }
   @Input() Effect: any
   @Input() effectSelected: any
   @Input() placeholder: string = ""
   constructor(private _tools: Tools, private _el: ElementRef<HTMLElement>) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    if(this.Effect)
+      {
+        if (this.Effect.TYPE == 1 || this.Effect.TYPE == 2 || this.Effect.TYPE == 3 || this.Effect.TYPE == 9) {
+          this.apiData = await this._tools.getAsync(this.Effect.CONFIGURATION.API_CALLING) as Array<any>
+        }
+      }
   }
   ngAfterViewInit() {
     this._tools.waitExecuteFunction(100, () => {

@@ -15,9 +15,8 @@ import { HeaderComponent } from "../Header/Header.component";
 export class MainComponent implements OnInit {
   sideMenu:boolean=true
   constructor() { }
-
   ngOnInit() {
-
+    
   }
  
 

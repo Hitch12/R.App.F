@@ -23,6 +23,26 @@ export class NaveComponent implements OnInit {
   ngOnInit() {
     this.items = [
       {
+        label: 'التحكم في النظام',
+        icon: 'pi pi-home',
+        items: [
+          {
+            label: 'نوع المستخدم',
+            icon: 'pi pi-database',
+            command: (event) => {
+              this._router.navigate(['Main', 'RuleGroup']);
+            },
+          },
+          {
+            label: 'المستخدمين',
+            icon: 'pi pi-database',
+            command: (event) => {
+              this._router.navigate(['Main', 'Users']);
+            },
+          }
+        ]
+      },
+      {
         label: 'بيانات النظام الأساسية',
         icon: 'pi pi-home',
         items: [

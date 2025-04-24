@@ -7,7 +7,7 @@ import { DialogModule } from "primeng/dialog"
 import { ButtonModule } from 'primeng/button';
 import { NgIf, NgTemplateOutlet } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputLabelComponent } from "../ColumnEffect/TextLabel/InputLabel.component";
+import { InputLabelComponent } from "../../../shared/pages/TextLabel/InputLabel.component";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
 @Component({

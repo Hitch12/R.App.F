@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { NaveComponent } from '../Nave/Nave.component';
+import { Tools } from '../../../shared/service/Tools';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-Header',
@@ -11,11 +13,16 @@ import { NaveComponent } from '../Nave/Nave.component';
 })
 export class HeaderComponent implements OnInit {
   @Input('Nave') _Nave!:NaveComponent
-  constructor() { }
+  constructor(public _tools: Tools, private _router: Router) { }
 
   ngOnInit() {
   }
   openNave() {
     this._Nave.showNave = true
+  }
+  logOut()
+  {
+    localStorage.removeItem("logInfo")
+    this._router.navigate(['Login'])
   }
 }
