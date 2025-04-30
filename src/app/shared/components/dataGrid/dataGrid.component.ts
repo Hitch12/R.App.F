@@ -92,6 +92,7 @@ export class DataGridComponent implements OnInit {
   @Input() AllowDelete: boolean = true;
   @Input() AllowCurdOperation: boolean = true;
   @Input() AllowEdit: boolean = false;
+  @Input() AddInherit: boolean = false;
   @Input() AllowUpdate: boolean = false;
   @Input() AllowSearch: boolean = true;
   @Input() scrollHeight: string = "flex"
@@ -149,7 +150,6 @@ export class DataGridComponent implements OnInit {
     deleted.forEach(deletedItem => {
       dataSaved.push(deletedItem)
     })
-    console.log(dataSaved)
 
     this.onSaveChanges(dataSaved).then((data: any) => {
       if (data != null && Array.isArray(data)) {
@@ -268,9 +268,13 @@ export class DataGridComponent implements OnInit {
   onEditItem(item: any) {
 
   }
+  onAddInert(item: any) {
+
+  }
   onGridAction(Action: GridAction) {
 
   }
+  
   selectLastInput() {
     this._tools.waitExecuteFunction(100, () => {
       let btnLastPage = this.el.nativeElement.querySelector(".p-paginator-last") as HTMLElement

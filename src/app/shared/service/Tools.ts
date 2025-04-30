@@ -10,6 +10,7 @@ import { LoadingComponent } from "../components/Loading/Loading.component";
   providedIn: 'root'
 })
 export class Tools {
+  tempData:any=null
   baseUrl: string = "https://localhost:44327/api/"
   Toaster!: ToasterComponent
   Loading!: LoadingComponent
@@ -53,10 +54,10 @@ export class Tools {
       return undefined;
     }
   }
-  public async putAsync<T>(url: string, data: any): Promise<T | undefined> {
+  public async putAsync<T>(url: string, data: any,filterHeader:string=""): Promise<T | undefined> {
     try {
       this.Loading.startLoading();
-      let response = await this._httpClient.put<T>(this.baseUrl + url, data).toPromise();
+      let response = await this._httpClient.put<T>(this.baseUrl + url, data,{headers:{"filter":filterHeader}}).toPromise();
       this.Loading.stopLoading();
       return response
     }

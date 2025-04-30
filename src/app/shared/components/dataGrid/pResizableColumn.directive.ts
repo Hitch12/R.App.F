@@ -19,11 +19,9 @@ export class PResizableColumnDirective implements AfterViewInit {
     
   }
   ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId) && this.divSpaceColResize) {
-      this.divSpaceColResize = document.createElement("div")
-      this.divSpaceColResize.classList.add('col-resize')
-      this.el.nativeElement.appendChild(this.divSpaceColResize)
-    }
+    this.divSpaceColResize = document.createElement("div")
+    this.divSpaceColResize.classList.add('col-resize')
+    this.el.nativeElement.appendChild(this.divSpaceColResize)
   }
   @HostListener('mousedown', ['$event'])
   onMouseDown = (e: MouseEvent) => {

@@ -6,7 +6,7 @@ export class Column {
     constructor(
         public name: string = '',
         public header: string = '',
-        public columnType: "text" | "number" | "lapel" | "dateTime" | "custom" | "comboBox" | "multiSelect"|"multiSelectObjectMode"| "yes-no" | "textarea" = "lapel",
+        public columnType: "text" | "number" | "numberWithFraction" | "lapel" | "date-Time" | "date" | "custom" | "comboBox" | "multiSelect" | "multiSelectObjectMode" | "yes-no" | "textarea" = "lapel",
         public filterType: "text" | "numeric" | "boolean" | "date" | "comboBox" | "yes-no" | "none" = "text",
         public width: number = 100,
         public frozen: boolean = false
@@ -17,7 +17,7 @@ export class Column {
     columnComboBoxOptionValue: string = ''
     columnComboBoxPlaceholder: string = ''
     columnComboBoxDataSource: Array<any> = []
-    columnComboBoxChange(selectNewItem: any, rowItem: any,comboBox:ComboBoxComponent) {
+    columnComboBoxChange(selectNewItem: any, rowItem: any, comboBox: ComboBoxComponent) {
 
     }
 
@@ -27,11 +27,13 @@ export class Column {
     columnMultiSelectselectIdKey: string = ''
     columnMultiSelectOptionValue: string = ''
     columnMultiSelectDataSource: Array<any> = []
+    columnMaxDate: Date | null = null;
+    columnMinDate: Date | null = null;
     columnMultiSelectChange(multiSelect: MultiselectComponent, rowItem: any) {
 
     }
-    Style_Show(value: any) :string{
-        
+    Style_Show(value: any): string {
+
         return value
     }
     templateColumn!: TemplateRef<any>

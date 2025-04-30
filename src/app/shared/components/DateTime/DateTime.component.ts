@@ -1,34 +1,53 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Tools } from '../../service/Tools';
+import { NgStyle } from '@angular/common';
 @Component({
   selector: 'app-DateTime',
   templateUrl: './DateTime.component.html',
   styleUrls: ['./DateTime.component.css'],
   standalone: true,
-  imports: [DatePickerModule, FormsModule]
+  imports: [DatePickerModule, FormsModule, NgStyle]
 })
 export class DateTimeComponent implements OnInit {
+  @Input() maxDate:Date|null=null;
+  @Input() minDate:Date|null=null;
   @Input() selectedDate: any = null
+  @Input() showTime: boolean = false
   @Input() forceMaxOrEqualDay: boolean = false
   @Input() view: 'date' | 'month' | 'year' = "date"
   @Input() placeholder: string = "أكتب التاريخ ..."
   @Output() selectedDateChange: EventEmitter<any> = new EventEmitter()
-  constructor(private _tools: Tools) { }
+  constructor(private _tools: Tools, private el: ElementRef<HTMLElement>) { }
 
   ngOnInit() {
 
   }
   ngOnChanges() {
+    if (this.showTime) {
+      if (typeof this.selectedDate == "string") {
+        //2025-04-23T18:23:00
+        this.selectedDate = new Date(`${this.selectedDate.split("T")[0]} ${this.selectedDate.split("T")[1]} GMT+3`);
+      }
+      else {
+        this.selectedDate = this.selectedDate;
+      }
+      return;
+    }
     if (this.selectedDate) {
       let text = new Date(this.selectedDate).toLocaleDateString("EN") + " GMT";
       this.selectedDate = new Date(text);
     }
+
   }
-  change(e: any) {
+  change(e: Date) {
     if (e != null) {
+      if (this.showTime) {
+        this.selectedDateChange.emit(this.getValueJsonWithGMT(e,3))
+        return;
+      }
       let text = new Date(e).toLocaleDateString("EN") + " GMT";
       this.selectedDate = new Date(text);
       if (this.selectedDate != null && this.forceMaxOrEqualDay) {
@@ -52,4 +71,26 @@ export class DateTimeComponent implements OnInit {
     this.selectedDate = null;
     this.selectedDateChange.emit(null);
   }
+  getValueJsonWithGMT(E: Date,TimeGMT=2) {
+    let editHours = (txt: string): string => {
+      let endValue = '';
+      if ((Number.parseInt(txt) + TimeGMT) < 10) {
+        endValue = "0" + ((Number.parseInt(txt) + TimeGMT)).toString();
+      }
+      else if ((Number.parseInt(txt) + TimeGMT)>23) {
+        endValue="0"+ ((Number.parseInt(txt) + TimeGMT)-24).toString();
+      }
+      else
+      {
+        endValue=(Number.parseInt(txt) + TimeGMT).toString();
+      }
+      return endValue;
+    }
+    let oldJson=E.toJSON();
+    let hours = editHours(oldJson.split("T")[1].split(":")[0]);
+    oldJson=`${oldJson.split('T')[0]}T${hours}:${oldJson.split("T")[1].split(":")[1]}:${oldJson.split("T")[1].split(":")[2]}`
+    console.log(oldJson)
+    return oldJson;
+  }
+
 }

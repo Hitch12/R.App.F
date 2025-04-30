@@ -124,16 +124,26 @@
                     <!-- <p-toggleswitch [(ngModel)]="item[column.name]" /> -->
                     <!-- <p-togglebutton [(ngModel)]="item[column.name]" onLabel="نعم" offLabel="لا" styleClass="w-24" /> -->
                     }
-                    @case ("dateTime") {
-                    <app-DateTime placeholder="كتابة ... " [(selectedDate)]="item[column.name]"
+                    @case ("date") {
+                    <app-DateTime placeholder="كتابة ... " [(selectedDate)]="item[column.name]" [maxDate]="column.columnMaxDate"  [minDate]="column.columnMinDate"
                         (selectedDateChange)="onSelectColumnData(item,$event,column);onGridAction({EVENT:$event,itemEdit:item,ActonType:'KEYUP',COLUMN:column})"></app-DateTime>
                     }
+                    @case ("date-Time") {
+                        <app-DateTime placeholder="كتابة ... " [(selectedDate)]="item[column.name]"  [showTime]="true" [maxDate]="column.columnMaxDate"  [minDate]="column.columnMinDate"
+                            (selectedDateChange)="onSelectColumnData(item,$event,column);onGridAction({EVENT:$event,itemEdit:item,ActonType:'KEYUP',COLUMN:column})"></app-DateTime>
+                        }
                     @case ("number") {
                     <p-inputnumber [(ngModel)]="item[column.name]"
                         (onKeyDown)="pInputTextKeyDown($event,{value:'1'},item);onGridAction({EVENT:$event,itemEdit:item,ActonType:'KEYUP',COLUMN:column})" mode="decimal" />
                     <!-- <p-datepicker [showButtonBar]="true" [(ngModel)]="item[column.name]" dateFormat="dd/mm/yy"
                         appendTo="body" [showIcon]="true" inputId="buttondisplay" [showOnFocus]="true" /> -->
                     }
+                    @case ("numberWithFraction") {
+                        <p-inputnumber [(ngModel)]="item[column.name]" [minFractionDigits]="0" [maxFractionDigits]="3"
+                            (onKeyDown)="pInputTextKeyDown($event,{value:'1'},item);onGridAction({EVENT:$event,itemEdit:item,ActonType:'KEYUP',COLUMN:column})" mode="decimal" />
+                        <!-- <p-datepicker [showButtonBar]="true" [(ngModel)]="item[column.name]" dateFormat="dd/mm/yy"
+                            appendTo="body" [showIcon]="true" inputId="buttondisplay" [showOnFocus]="true" /> -->
+                        }
                     @case ("comboBox") {
                     <app-comboBox #comboBox [dataSource]="column.columnComboBoxDataSource"
                         [optionValue]="column.columnComboBoxOptionValue" [apiPathDataSource]="column.apiPathDataSource"
@@ -165,7 +175,7 @@
                     }
                     @case ("custom") {
                     <ng-container [ngTemplateOutlet]="column.templateColumn"
-                        [ngTemplateOutletContext]="{ $implicit:item}"></ng-container>
+                        [ngTemplateOutletContext]="{ $implicit:item ,Grid:this}"></ng-container>
                     }
                     }
                 </td>
@@ -175,6 +185,8 @@
                         (click)="onDeleteItem(item)"></p-button>
                     <p-button class="mx-2" severity="success" *ngIf="AllowEdit" label="تعديل" icon="pi pi-pen-to-square"
                         (click)="onEditItem(item)"></p-button>
+                    <p-button class="mx-2 " severity="success" *ngIf="AddInherit" label="جديد" icon="pi pi-plus"
+                        (click)="onAddInert(item)"></p-button>
                 </td>
             </tr>
         </ng-template>

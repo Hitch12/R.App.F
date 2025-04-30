@@ -65,15 +65,16 @@ export class InputLabelComponent implements OnInit {
     else {
       value += data?.VALUE ?? 0;
     }
+    
     if (value > 0 && this.Effect.CONFIGURATION.FORCE_VALUE == true) {
       this.effectSelected.EFFECT_INFO.Value = value;
       this.effectSelected.EFFECT_INFO.ForceValue = true;
-      this.effectSelected.EFFECT_INFO.calcByHours = true;
     }
     else if (this.Effect.CONFIGURATION.FORCE_VALUE == false) {
       this.effectSelected.EFFECT_INFO.Value = value;
       this.effectSelected.EFFECT_INFO.ForceValue = false;
-      this.effectSelected.EFFECT_INFO.calcByHours = false;
     }
+    debugger
+    this.effectSelected.EFFECT_INFO.calcByHours = this.Effect.CONFIGURATION.calculatedByHours;
   }
 }

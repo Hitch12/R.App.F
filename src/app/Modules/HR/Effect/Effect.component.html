@@ -66,7 +66,10 @@
                   تحسب بالساعة
                   <p-checkbox  [id]="'awaySetMony'" [(ngModel)]="this.effectSelected.EFFECT_INFO.calcByHours" [binary]="true" />
                 </span>
-                <span *ngIf="this.effectSelected.EFFECT_INFO.ForceValue" [id]="'awaySetMony'"  >تحسب بالساعات</span>
+                <span *ngIf="this.effectSelected.EFFECT_INFO.ForceValue" [id]="'awaySetMony'"  > 
+                  <span *ngIf="this.effectSelected.EFFECT_INFO.calcByHours"> تحسب بالساعة</span>
+                  <span *ngIf="!this.effectSelected.EFFECT_INFO.calcByHours"> تحسب بالقيمة</span>
+                </span>
               </div>
             </app-InputLabel>
             <app-InputLabel placeholder="وقت تطبيق المؤثر" class="d-block mt-5">

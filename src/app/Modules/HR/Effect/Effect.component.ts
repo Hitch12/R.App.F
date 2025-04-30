@@ -33,6 +33,7 @@ interface EffectInfo {
   calcByHours?: boolean;
   divedThem?: boolean;
   COLUMNS: any[];
+
 }
 
 interface EffectColumn {
@@ -260,7 +261,7 @@ export class EffectComponent implements OnInit {
             item.DEPART = null;
           }
         }
-        this.grid.Columns.push(new Column("EFFECT_DATE", "تاريخ التطبيق", "dateTime"))
+        this.grid.Columns.push(new Column("EFFECT_DATE", "تاريخ التطبيق", "date"))
         let FORCE_VALUE = (this.effectSelected.COLUMNS as Array<any>).find(col => (col.TYPE == 7 || col.TYPE == 8) && col?.CONFIGURATION?.FORCE_VALUE == true) != null
         this.grid.Columns.push(new Column("value", "القيمة", FORCE_VALUE ? "lapel" : "number", "numeric"));
         this.grid.Columns.push(new Column("calcByHours", "تحسب بالساعة", "yes-no"))
@@ -303,7 +304,7 @@ export class EffectComponent implements OnInit {
               columnConfig.columnType = "textarea";
               break;
             case 5:
-              columnConfig.columnType = "dateTime";
+              columnConfig.columnType = "date";
               break;
             case 7:
               columnConfig.columnType = "comboBox";
@@ -313,7 +314,7 @@ export class EffectComponent implements OnInit {
               columnConfig.columnComboBoxPlaceholder = col.COLUMN_NAME;
               columnConfig.columnComboBoxChange = (item, row) => {
                 row.value = item.VALUE
-                row.calcByHours = (this.effectSelected.COLUMNS as Array<any>).find(col => (col.TYPE == 7 || col.TYPE == 8) && col?.CONFIGURATION?.FORCE_VALUE == true) != null
+                row.calcByHours = (this.effectSelected.COLUMNS as Array<any>).find(col => (col.TYPE == 7 || col.TYPE == 8) && col?.CONFIGURATION?.calculatedByHours == true) != null
               }
               break;
             case 8:
@@ -328,7 +329,7 @@ export class EffectComponent implements OnInit {
                   value += item.VALUE;
                 })
                 row.value = value;
-                row.calcByHours = (this.effectSelected.COLUMNS as Array<any>).find(col => (col.TYPE == 7 || col.TYPE == 8) && col?.CONFIGURATION?.FORCE_VALUE == true) != null
+                row.calcByHours = (this.effectSelected.COLUMNS as Array<any>).find(col => (col.TYPE == 7 || col.TYPE == 8) && col?.CONFIGURATION?.calculatedByHours == true) != null
               }
               break;
           }

@@ -18,7 +18,9 @@ import { Table } from 'primeng/table';
 export class GetAddEditDeleteComponent implements OnInit {
   @ViewChild('grid') grid!: DataGridComponent
   @Input() ApiPage: string = ""
+  @Input() GetApiPage: string = ""
   @Input() header: string = ""
+  @Input() FilterInEdit: string = ""
   @Input() Columns: Array<Column> = []
   @Output() onUpdate: EventEmitter<any> = new EventEmitter()
   @Output() onConfigGrid: EventEmitter<DataGridComponent> = new EventEmitter()
@@ -26,6 +28,11 @@ export class GetAddEditDeleteComponent implements OnInit {
   constructor(private _tools: Tools) { }
 
   ngOnInit() {
+  }
+  ngOnChanges() {
+    this.ApiPage=this.ApiPage
+    this.GetApiPage=this.GetApiPage
+    this.FilterInEdit=this.FilterInEdit
   }
   ngAfterViewInit() {
     this._tools.waitExecuteFunction(100, () => {
@@ -42,7 +49,7 @@ export class GetAddEditDeleteComponent implements OnInit {
       this.grid.onUpdate = (e) => this.Update(e);
       this.grid.dataKey = "ID";
       this.grid.IsLoading = true;
-      this._tools.getAsync(this.ApiPage).then((data: any) => {
+      this._tools.getAsync(this.GetApiPage==""?this.ApiPage:this.GetApiPage).then((data: any) => {
         this.grid.IsLoading = false;
         this.grid.dataSource = data
       })
@@ -54,7 +61,7 @@ export class GetAddEditDeleteComponent implements OnInit {
     this.grid.dt.reset();
   }
   async saveChanges(dataSaved: any = null) {
-    let data: any = await this._tools.putAsync(this.ApiPage + '/EditMore', dataSaved)
+    let data: any = await this._tools.putAsync(this.ApiPage + '/EditMore', dataSaved,this.FilterInEdit)
     if (data) {
       if (Array.isArray(data)) {
         this._tools.Toaster.showSuccess("تم التحديث بنجاح");
@@ -73,7 +80,7 @@ export class GetAddEditDeleteComponent implements OnInit {
   }
   async Update(table: Table) {
     table.loading = true;
-    let data: any = await this._tools.getAsync(this.ApiPage)
+    let data: any = await this._tools.getAsync(this.GetApiPage==""?this.ApiPage:this.GetApiPage)
     if (data) {
       this.grid.dataSource = data
       this.onUpdate.emit(data)

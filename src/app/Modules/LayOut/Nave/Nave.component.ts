@@ -86,7 +86,7 @@ export class NaveComponent implements OnInit {
             label: 'الموظفين',
             icon: 'pi pi-database',
             command: (event) => {
-              this._router.navigate(['Main', 'Employes']);
+              this._router.navigate(['Main', 'Employs']);
             },
           },
           {
@@ -118,21 +118,20 @@ export class NaveComponent implements OnInit {
           {
             label: 'الحضور و الأنصراف',
             command: (event) => {
-              this._router.navigate(['Main', 'Companies']);
             },
             items: [
               {
-                label: 'السجلات',
+                label: 'الأجازات',
                 icon: 'pi pi-database',
                 command: (event) => {
-                  this._router.navigate(['Main', 'Employes']);
+                  this._router.navigate(['Main', 'Holiday']);
                 },
               },
               {
                 label: 'النواقص',
                 icon: 'pi pi-database',
                 command: (event) => {
-                  this._router.navigate(['Main', 'Employes']);
+                  this._router.navigate(['Main', 'ForgatInOut']);
                 },
               },
               {

@@ -15,6 +15,9 @@ import { LoginComponent } from './Modules/Admin/Login/Login.component';
 import { HomeComponent } from './Modules/LayOut/Home/Home.component';
 import { authGuard } from './shared/Gurd/auth.guard';
 import { RuleGroupComponent } from './Modules/Admin/RuleGroup/RuleGroup.component';
+import { ForgatInOutComponent } from './Modules/HR/ForgatInOut/ForgatInOut.component';
+import { HolidayRecodesComponent } from './Modules/HR/holidayRecords/holidayRecords.component';
+import { EmploysRecodesComponent } from './Modules/HR/EmployesRecordies/EmploysRecodes.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'Login', title: "الرئيسية", pathMatch: "full" },
@@ -25,8 +28,11 @@ export const routes: Routes = [
             { path: 'EffectInSystem',title:'مؤثرات النظام', component: EffectInSystemComponent },
             { path: 'ColumnEffect',title:'بنود المؤثر', component: ColumnEffectComponent },
             { path: 'Mangements',title:'الهيكل الاداري', component: MangementComponent },
-            { path: 'Employes',title:'الموظفين', component: EmployesComponent },
+            { path: 'Employs',title:'قائمة الموظفين', component: EmploysRecodesComponent },
+            { path: 'Employs/Control',title:'بيانات الموظف', component: EmployesComponent },
             { path: 'Companies',title:'الشركات', component: CompanyComponent },
+            { path: 'ForgatInOut',title:'نواقص الحضور و الانصراف', component: ForgatInOutComponent },
+            { path: 'Holiday',title:'تسجيل الاجازات', component: HolidayRecodesComponent },
             { path: 'Places',title:'اماكن العمل', component: PlaceComponent },
             { path: 'Effects',title:'المؤثرات', component: EffectRecodesComponent },
             { path: 'Effects/Add',title:'اضافة مؤئثر', component: EffectComponent },

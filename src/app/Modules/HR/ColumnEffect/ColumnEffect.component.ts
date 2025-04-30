@@ -24,7 +24,7 @@ export class ColumnEffectComponent implements OnInit {
   Columns: Array<Column> = [];
   Columns_Setting: Array<Column> = [];
   constructor() { }
-  CONFIGURATION = { "API_CALLING": "Employee", "FOCUS_PROPERTY": "CODE", "FORCE_VALUE": false, "REQUIRED": true, "ArrayOfValues": [], ShowValue: "" }
+  CONFIGURATION = { "API_CALLING": "Employee/Suggestions_Code_and_Name", "FOCUS_PROPERTY": "CODE", "calculatedByHours":false, "FORCE_VALUE": false, "REQUIRED": true, "ArrayOfValues": [], ShowValue: "" }
   ngOnInit() {
     this.Columns.push(new Column("ID", "رقم البند"))
     this.Columns.push(new Column("COLUMN_NAME", "اسم البند", "text", "text", 200))

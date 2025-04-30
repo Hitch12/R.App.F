@@ -23,6 +23,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       error: (error: any) => {
         console.log(error);
         _tools.Toaster.showError(error?.error || 'Unknown Error');
+        if(error?.error?.detail)
+        _tools.Toaster.showError(error?.error.detail || 'Unknown Error');
       },
     })
   );

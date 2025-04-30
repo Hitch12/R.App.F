@@ -128,7 +128,7 @@ export class StepperComponent {
     }
 
     let lastStep = getLast();
-    if (lastStep != null) {
+    if (lastStep != null && this.Configuration.Steps[this.Configuration._ActiveStepIndex]!=undefined) {
       if (this.Configuration.Steps[this.Configuration._ActiveStepIndex].InfoStep.Header == lastStep.InfoStep.Header) {
         this.Configuration.ShowNextButton = false;
         this.Configuration.disableSave = false;
